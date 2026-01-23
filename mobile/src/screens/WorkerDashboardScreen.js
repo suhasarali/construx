@@ -41,33 +41,7 @@ const WorkerDashboardScreen = () => {
         }
     };
 
-    // New function for submitting daily work log
-    const submitDailyWorkLog = async () => {
-        const formData = new FormData();
 
-        if (image) {
-            let filename = image.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-            formData.append('photos', { uri: image, name: filename, type });
-        }
-        
-        formData.append('type', 'WorkerLog');
-        formData.append('date', new Date().toISOString());
-        formData.append('workSummary', logDescription);
-
-        try {
-            await api.post('/reports', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            Alert.alert('Success', 'Daily Work Log Submitted');
-            setLogDescription('');
-            setImage(null);
-        } catch (error) {
-            console.error('Error submitting daily work log:', error);
-            Alert.alert('Error', 'Failed to submit daily work log.');
-        }
-    };
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -128,6 +102,12 @@ const WorkerDashboardScreen = () => {
                     <Text style={styles.gridValue}>0</Text>
                     <Text style={styles.gridLabel}>Issues</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DailyWork')}>
+                    <Ionicons name="cloud-upload-outline" size={32} color="#34C759" />
+                    <Text style={styles.gridValue}>+</Text>
+                    <Text style={styles.gridLabel}>Daily Work</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -146,8 +126,9 @@ const styles = StyleSheet.create({
     statusText: { fontSize: 20, fontWeight: 'bold', marginLeft: 10, color: '#000' },
     actionBtn: { backgroundColor: '#007AFF', padding: 12, borderRadius: 10, alignItems: 'center' },
     btnText: { color: 'white', fontWeight: '600' },
-    grid: { flexDirection: 'row', justifyContent: 'space-between' },
-    gridItem: { backgroundColor: 'white', padding: 20, borderRadius: 15, width: '48%', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
+    btnText: { color: 'white', fontWeight: '600' },
+    grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+    gridItem: { backgroundColor: 'white', padding: 20, borderRadius: 15, width: '48%', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2, marginBottom: 15 },
     gridValue: { fontSize: 28, fontWeight: 'bold', marginVertical: 5 },
     gridLabel: { color: '#8E8E93' }
 });

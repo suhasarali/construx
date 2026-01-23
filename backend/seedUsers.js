@@ -38,6 +38,20 @@ const seedUsers = async () => {
                 password: 'password123',
                 role: 'Worker',
                 location: { lat: 19.0760, lng: 72.8777 }
+            },
+            {
+                name: 'Ram',
+                phone: '1111111111',
+                password: 'password123',
+                role: 'Worker',
+                location: { lat: 19.0760, lng: 72.8777 }
+            },
+            {
+                name: 'Sham',
+                phone: '2222222222',
+                password: 'password123',
+                role: 'Worker',
+                location: { lat: 19.0760, lng: 72.8777 }
             }
         ];
 

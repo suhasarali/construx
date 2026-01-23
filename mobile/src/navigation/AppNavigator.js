@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
 import WorkerStack from './WorkerStack';
 import EngineerStack from './EngineerStack';
+import DailyWorkScreen from '../screens/DailyWorkScreen';
 const HomeScreen = () => (
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <Text>Welcome Home</Text>
@@ -30,7 +31,10 @@ const AppNavigator = () => {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {userToken ? (
                     userInfo?.role === 'Worker' ? (
-                        <Stack.Screen name="WorkerHome" component={WorkerStack} />
+                        <>
+                            <Stack.Screen name="WorkerHome" component={WorkerStack} />
+                            <Stack.Screen name="DailyWork" component={DailyWorkScreen} />
+                        </>
                     ) : (
                         <Stack.Screen name="EngineerHome" component={EngineerStack} />
                     )

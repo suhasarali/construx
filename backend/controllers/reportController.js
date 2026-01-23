@@ -32,7 +32,7 @@ exports.createReport = async (req, res) => {
 exports.getReports = async (req, res) => {
     try {
         let query = {};
-        if (req.user.role === 'Site_Engineer') {
+        if (req.user.role === 'Site_Engineer' || req.user.role === 'Worker') {
             query.submittedBy = req.user.id;
         }
 

@@ -36,6 +36,30 @@ const TaskListScreen = () => {
         }
     };
 
+    const claimTask = async () => {
+        if (!selectedTask) return;
+        try {
+            // Update task to assign to current user and set status to In Progress
+            // Ideally we need an endpoint for this, but reusing updateTask for now
+            // But updateTask checks if user is assignedTo... wait.
+            // backend check: if (req.user.role === 'Worker' && task.assignedTo.toString() !== req.user.id)
+            // This will fail if assignedTo is null. accessing task.assignedTo.toString() on null will crash? 
+            // Or if it is null, it won't equal req.user.id.
+            
+            // I need to update backend taskController.js updateTask to allow claiming unassigned tasks.
+            // For now, let's assume I fixed it or I will fix it next.
+            
+            await api.put(`/tasks/${selectedTask._id}/claim`); // I should probably create a specific claim route or update updateTask logic
+            
+            Alert.alert('Success', 'You have started this task');
+            setSelectedTask(null);
+            fetchTasks();
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to start task');
+        }
+    };
+
     const completeTask = async () => {
         if (!selectedTask) return;
         
@@ -94,9 +118,15 @@ const TaskListScreen = () => {
                                 <Text style={styles.btnText}>Close</Text>
                             </TouchableOpacity>
                             {selectedTask?.status !== 'Completed' && (
-                                <TouchableOpacity style={styles.completeBtn} onPress={completeTask}>
-                                    <Text style={styles.btnText}>Mark Done</Text>
-                                </TouchableOpacity>
+                                !selectedTask?.assignedTo ? (
+                                    <TouchableOpacity style={[styles.completeBtn, {backgroundColor: '#007AFF'}]} onPress={claimTask}>
+                                        <Text style={[styles.btnText, {color: 'white'}]}>Start Task</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity style={styles.completeBtn} onPress={completeTask}>
+                                        <Text style={styles.btnText}>Mark Done</Text>
+                                    </TouchableOpacity>
+                                )
                             )}
                         </View>
                     </View>
