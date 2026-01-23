@@ -54,7 +54,7 @@ export const downloadInvoicePDF = async (req, res) => {
             return res.status(404).json({ message: 'Invoice not found' });
         }
 
-        const doc = new PDFDocument({ margin: 50 });
+        const doc = new PDFDocument({ margin: 50, size: 'A4' });
 
         // Set response headers
         res.setHeader('Content-Type', 'application/pdf');
@@ -62,74 +62,93 @@ export const downloadInvoicePDF = async (req, res) => {
 
         doc.pipe(res);
 
-        // Header
-        doc.fillColor('#444444')
-           .fontSize(20)
-           .text('INVOICE', 50, 57)
-           .fontSize(10)
-           .text('Construx Construction Co.', 200, 50, { align: 'right' })
-           .text('123 Main Street', 200, 65, { align: 'right' })
-           .text('Bangalore, India', 200, 80, { align: 'right' })
-           .moveDown();
+        // --- Header Section ---
+        doc.fontSize(10).fillColor('#666666').text('YOUR LOGO', 50, 50); // MOCK LOGO
+        doc.text('NO. 000001', 450, 50, { align: 'right' }); 
 
-        // Invoice Details
-        doc.fillColor('#000000')
-           .fontSize(10)
-           .text(`Invoice Number: ${invoice.invoiceNumber}`, 50, 150)
-           .text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`, 50, 165)
-           .text(`Client: ${invoice.clientName}`, 300, 150, { align: 'right' })
-           .moveDown();
-
-        // Line Items Header
-        let y = 220;
-        doc.font('Helvetica-Bold')
-           .text('Item', 50, y)
-           .text('Qty', 250, y)
-           .text('Rate', 300, y, { width: 90, align: 'right' })
-           .text('Tax %', 400, y, { width: 50, align: 'right' })
-           .text('Total', 450, y, { align: 'right' });
+        doc.moveDown(2);
         
-        doc.moveTo(50, y + 15).lineTo(550, y + 15).stroke();
+        // "INVOICE" Title
+        doc.font('Helvetica-Bold').fontSize(40).fillColor('#000000').text('INVOICE', 50, 100);
         
-        y += 25;
-        doc.font('Helvetica');
+        doc.fontSize(10).font('Helvetica-Bold').text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`, 50, 150);
 
-        // Items
+        // Billed To / From
+        const topInfoY = 180;
+        
+        doc.font('Helvetica-Bold').text('Billed to:', 50, topInfoY);
+        doc.font('Helvetica').text('Construx Construction Co.', 50, topInfoY + 15);
+        doc.text('123 Main Street', 50, topInfoY + 30);
+        doc.text(`Attn: ${invoice.clientName}`, 50, topInfoY + 45); 
+
+        doc.font('Helvetica-Bold').text('From:', 350, topInfoY);
+        doc.font('Helvetica').text('Firstbenchers Suppliers Ltd.', 350, topInfoY + 15);
+        doc.text('Mumbai, India', 350, topInfoY + 30);
+        doc.text('support@firstbenchers.com', 350, topInfoY + 45);
+
+        // --- Table Section ---
+        const tableTop = 260;
+        
+        // Table Header Background
+        doc.rect(50, tableTop, 495, 25).fill('#e0e0e0');
+        
+        // Table Header Text
+        doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
+        const itemX = 60;
+        const qtyX = 300;
+        const priceX = 380;
+        const amountX = 480;
+
+        doc.text('Item', itemX, tableTop + 8);
+        doc.text('Quantity', qtyX, tableTop + 8);
+        doc.text('Price', priceX, tableTop + 8);
+        doc.text('Amount', amountX, tableTop + 8);
+
+        // Rows
+        let y = tableTop + 40;
+        doc.font('Helvetica').fontSize(10);
+
         invoice.items.forEach(item => {
-            doc.text(item.description, 50, y)
-               .text(item.quantity.toString(), 250, y)
-               .text((item.rate || 0).toFixed(2), 300, y, { width: 90, align: 'right' })
-               .text(`${item.gstRate || 18}%`, 400, y, { width: 50, align: 'right' }) 
-               .text((item.amount || 0).toFixed(2), 450, y, { align: 'right' });
-            y += 20;
+            const price = (item.rate || 0).toFixed(2);
+            const amount = (item.amount || 0).toFixed(2);
+            
+            doc.text(item.description, itemX, y);
+            doc.text(item.quantity.toString(), qtyX, y);
+            doc.text(price, priceX, y); 
+            doc.text(amount, amountX, y);
+            
+            y += 25;
         });
 
-        doc.moveTo(50, y + 10).lineTo(550, y + 10).stroke();
-        y += 20;
-
-        // Totals
-        const labelX = 250;
-        const labelWidth = 190;
-        const valX = 450;
-        const valWidth = 100;
-        
-        doc.font('Helvetica-Bold');
-        doc.text('Subtotal:', labelX, y, { width: labelWidth, align: 'right' });
-        doc.text((invoice.subTotal || 0).toFixed(2), valX, y, { width: valWidth, align: 'right' });
+        // Divider
+        doc.moveTo(50, y).lineTo(545, y).strokeColor('#eeeeee').stroke();
         y += 15;
 
-        doc.text('Tax (CGST+SGST):', labelX, y, { width: labelWidth, align: 'right' });
-        const totalTax = (invoice.cgst || 0) + (invoice.sgst || 0) + (invoice.igst || 0);
-        doc.text(totalTax.toFixed(2), valX, y, { width: valWidth, align: 'right' });
-        y += 20;
+        // --- Totals Section ---
+        doc.font('Helvetica-Bold').fillColor('#000000');
+        doc.text('Total', 400, y);
+        doc.text(`INR ${(invoice.totalAmount || 0).toFixed(2)}`, 480, y);
         
-        doc.fontSize(12)
-           .text('Total Amount:', labelX, y, { width: labelWidth, align: 'right' });
-        doc.text(`INR ${(invoice.totalAmount || 0).toFixed(2)}`, valX, y, { width: valWidth, align: 'right' });
+        // Footer Notes & Payment Method
+        const footerY = y + 50;
+        doc.font('Helvetica-Bold').text('Payment method:', 50, footerY);
+        doc.font('Helvetica').text('Bank Transfer / UPI', 150, footerY);
         
-        // Footer
-        doc.fontSize(10)
-           .text('Thank you for your business.', 50, 700, { align: 'center', width: 500 });
+        doc.font('Helvetica-Bold').text('Note:', 50, footerY + 20);
+        doc.font('Helvetica').text('Thank you for choosing us!', 150, footerY + 20);
+
+
+        // --- Footer Wave Art ---
+        // Simple wave simulation
+        doc.save();
+        doc.path('M 0 750 C 150 700, 350 780, 600 720 L 600 850 L 0 850 Z')
+           .fill('#333333');
+        
+        doc.path('M 0 780 C 150 750, 400 820, 600 760 L 600 850 L 0 850 Z')
+           .fillOpacity(0.3)
+           .fill('#666666');
+           
+        doc.restore();
 
         doc.end();
 

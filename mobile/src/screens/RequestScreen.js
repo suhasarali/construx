@@ -9,6 +9,7 @@ const RequestScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     
     // Form
+    const [cart, setCart] = useState([]);
     const [itemName, setItemName] = useState('');
     const [quantity, setQuantity] = useState('');
     const [unit, setUnit] = useState('');
@@ -43,24 +44,39 @@ const RequestScreen = () => {
         }
     };
 
-    const submitRequest = async () => {
+    const addItemToCart = () => {
         if (!itemName || !quantity || !unit) {
-            Alert.alert('Error', 'Fill all fields');
+            Alert.alert('Error', 'Please select material and quantity');
+            return;
+        }
+        setCart([...cart, { name: itemName, quantity: Number(quantity), unit }]);
+        setItemName('');
+        setQuantity('');
+        setUnit('');
+    };
+
+    const removeFromCart = (index) => {
+        const newCart = [...cart];
+        newCart.splice(index, 1);
+        setCart(newCart);
+    };
+
+    const submitRequest = async () => {
+        if (cart.length === 0) {
+            Alert.alert('Error', 'Add at least one item');
             return;
         }
 
         try {
             await api.post('/requests', {
-                items: [{ name: itemName, quantity: Number(quantity), unit }],
+                items: cart,
                 urgency,
                 siteLocation: { lat: 0, lng: 0, address: 'Site A' },
                 type: 'Material' 
             });
             Alert.alert('Success', 'Request Sent');
             setModalVisible(false);
-            setItemName('');
-            setQuantity('');
-            setUnit('');
+            setCart([]); // Clear cart
             setUrgency('Medium');
             fetchRequests();
         } catch (error) {
@@ -136,6 +152,26 @@ const RequestScreen = () => {
                                      <TextInput style={[styles.input, {width:'48%'}]} placeholder="Qty" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
                                      <TextInput style={[styles.input, {width:'48%', backgroundColor: '#f0f0f0'}]} placeholder="Unit" value={unit} editable={false} />
                                 </View>
+
+                                <TouchableOpacity style={styles.addItemBtn} onPress={addItemToCart}>
+                                    <Text style={styles.addItemText}>+ Add Item to List</Text>
+                                </TouchableOpacity>
+
+                                {cart.length > 0 && (
+                                    <View style={styles.cartContainer}>
+                                        <Text style={styles.label}>Items in Request:</Text>
+                                        <ScrollView style={{maxHeight: 100}}>
+                                            {cart.map((item, index) => (
+                                                <View key={index} style={styles.cartItem}>
+                                                    <Text style={{flex: 1}}>{item.name} ({item.quantity} {item.unit})</Text>
+                                                    <TouchableOpacity onPress={() => removeFromCart(index)}>
+                                                        <Ionicons name="trash" size={18} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            ))}
+                                        </ScrollView>
+                                    </View>
+                                )}
                                 
                                 <Text style={styles.label}>Urgency:</Text>
                                 <View style={styles.row}>
@@ -152,7 +188,7 @@ const RequestScreen = () => {
                                         <Text style={styles.btnText}>Cancel</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.saveBtn} onPress={submitRequest}>
-                                        <Text style={[styles.btnText, {color:'white'}]}>Submit</Text>
+                                        <Text style={[styles.btnText, {color:'white'}]}>Submit Request ({cart.length})</Text>
                                     </TouchableOpacity>
                                 </View>
                             </>
@@ -195,7 +231,11 @@ const styles = StyleSheet.create({
     btnText: { fontWeight: 'bold' },
     label: { marginBottom: 5, fontWeight: '600', color: '#333' },
     presetList: { maxHeight: 200, borderWidth: 1, borderColor: '#eee', borderRadius: 8, marginBottom: 15 },
-    presetItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' }
+    presetItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
+    addItemBtn: { backgroundColor: '#34C759', padding: 10, borderRadius: 8, alignItems: 'center', marginVertical: 10 },
+    addItemText: { color: 'white', fontWeight: 'bold' },
+    cartContainer: { maxHeight: 150, marginBottom: 15, borderWidth: 1, borderColor: '#eee', borderRadius: 8, padding: 10 },
+    cartItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' }
 });
 
 export default RequestScreen;
