@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 
 // import routes
@@ -12,7 +12,7 @@ import requestRoutes from './routes/requestRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;

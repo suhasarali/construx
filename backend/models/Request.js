@@ -32,6 +32,18 @@ const requestSchema = new mongoose.Schema({
         type: String,
         enum: ['Low', 'Medium', 'High', 'Critical'],
         default: 'Medium'
+    },
+    payment: {
+        amount: Number,
+        paymentId: String,
+        orderId: String,
+        status: {
+            type: String,
+            enum: ['Pending', 'Paid', 'Failed'],
+            default: 'Pending',
+        },
+        method: String,
+        paidAt: Date,
     }
 }, { timestamps: true });
 

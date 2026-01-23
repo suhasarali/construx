@@ -21,6 +21,17 @@ const materialRequisitionSchema = new mongoose.Schema({
         ref: 'User', // Manager/Owner
     },
     comments: String,
+    payment: {
+        amount: Number,
+        paymentId: String,
+        orderId: String,
+        status: {
+            type: String,
+            enum: ['Pending', 'Paid', 'Failed'],
+            default: 'Pending',
+        },
+        paidAt: Date,
+    },
 }, { timestamps: true });
 
 const MaterialRequisition = mongoose.model('MaterialRequisition', materialRequisitionSchema);
