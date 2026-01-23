@@ -6,10 +6,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    email: { // Optional for Workers, but good for uniqueness if available
+    email: { 
         type: String,
         unique: true,
-        sparse: true, // Allow multiple nulls if workers don't have email
+        sparse: true, 
     },
     phone: {
         type: String,
@@ -22,12 +22,26 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Owner', 'Manager', 'Engineer', 'Worker'],
+        enum: ['Owner', 'Manager', 'Site_Engineer', 'Worker'],
         default: 'Worker',
+    },
+    siteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Site', // Placeholder for multi-site
+        default: null
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    profileImage: {
+        type: String,
+        default: ''
     },
     location: { // For Geo-fencing or last known location
         lat: Number,
         lng: Number,
+        lastUpdated: Date
     },
     createdAt: {
         type: Date,

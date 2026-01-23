@@ -7,12 +7,36 @@ const generateToken = (id, role) => {
     });
 };
 
+// @desc    Get All Users (Admin/Manager)
+// @route   GET /api/auth/users
+// @access  Manager, Owner
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).sort({ createdAt: -1 });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Delete User
+// @route   DELETE /api/auth/users/:id
+// @access  Manager, Owner
+exports.deleteUser = async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.json({ message: 'User deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public (or Admin only later)
 exports.registerUser = async (req, res) => {
     try {
-        const { name, email, phone, password, role } = req.body;
+        const { name, email, phone, password, role, siteId, profileImage } = req.body;
 
         const userExists = await User.findOne({ phone });
 
@@ -26,6 +50,8 @@ exports.registerUser = async (req, res) => {
             phone,
             password,
             role,
+            siteId, 
+            profileImage
         });
 
         if (user) {

@@ -4,8 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ActivityIndicator, View, Text } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
-
-// Placeholder Screens for now
+import WorkerStack from './WorkerStack';
+import EngineerStack from './EngineerStack';
 const HomeScreen = () => (
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <Text>Welcome Home</Text>
@@ -14,16 +14,12 @@ const HomeScreen = () => (
 
 const Stack = createStackNavigator();
 
-import WorkerDashboardScreen from '../screens/WorkerDashboardScreen';
-import ManagerDashboardScreen from '../screens/ManagerDashboardScreen';
-import EngineerDashboardScreen from '../screens/EngineerDashboardScreen';
-
 const AppNavigator = () => {
-    const { userToken, userInfo, isLoading } = useContext(AuthContext);
+    const { isLoading, userToken, userInfo } = useContext(AuthContext);
 
     if (isLoading) {
         return (
-            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" />
             </View>
         );
@@ -32,16 +28,14 @@ const AppNavigator = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {userToken === null ? (
-                    <Stack.Screen name="Login" component={LoginScreen} />
-                ) : (
+                {userToken ? (
                     userInfo?.role === 'Worker' ? (
-                        <Stack.Screen name="WorkerHome" component={WorkerDashboardScreen} />
-                    ) : userInfo?.role === 'Engineer' ? (
-                        <Stack.Screen name="EngineerHome" component={EngineerDashboardScreen} />
+                        <Stack.Screen name="WorkerHome" component={WorkerStack} />
                     ) : (
-                        <Stack.Screen name="ManagerHome" component={ManagerDashboardScreen} />
+                        <Stack.Screen name="EngineerHome" component={EngineerStack} />
                     )
+                ) : (
+                    <Stack.Screen name="Login" component={LoginScreen} />
                 )}
             </Stack.Navigator>
         </NavigationContainer>

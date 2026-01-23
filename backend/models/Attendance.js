@@ -16,14 +16,28 @@ const attendanceSchema = new mongoose.Schema({
     checkOutTime: {
         type: Date,
     },
-    location: {
+    checkInLocation: {
         lat: Number,
         lng: Number,
         address: String,
+        withinFence: Boolean
     },
+    checkOutLocation: {
+        lat: Number,
+        lng: Number,
+        address: String,
+        withinFence: Boolean
+    },
+    checkInPhoto: String, // URL/Path to selfie
+    checkOutPhoto: String, 
     status: {
-        type: String, // Present, Absent, Half-day
+        type: String, 
+        enum: ['Present', 'Absent', 'Half-day', 'Pending_Approval', 'Rejected'],
         default: 'Absent',
+    },
+    verifiedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
 }, { timestamps: true });
 

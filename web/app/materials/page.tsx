@@ -2,68 +2,99 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
+import { PenTool, Check, X } from 'lucide-react';
 
-export default function Materials() {
-  const [requisitions, setRequisitions] = useState([]);
+export default function MaterialsPage() {
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchRequisitions();
-  }, []);
+    useEffect(() => {
+        fetchRequests();
+    }, []);
 
-  const fetchRequisitions = async () => {
-    try {
-      const res = await api.get('/materials');
-      setRequisitions(res.data);
-    } catch (error) { console.error(error); }
-  };
+    const fetchRequests = async () => {
+        try {
+            // const res = await api.get('/materials'); // DEPRECATED
+            const res = await api.get('/requests');
+            setRequests(res.data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const updateStatus = async (id: string, status: string) => {
-    try {
-        await api.put(`/materials/${id}/status`, { status });
-        fetchRequisitions();
-    } catch (error) { console.error(error); }
-  };
+    const updateStatus = async (id: string, status: string) => {
+        if(!confirm(`Mark request as ${status}?`)) return;
+        try {
+            await api.put(`/requests/${id}`, { status });
+            fetchRequests();
+        } catch (e) { alert('Failed to update'); }
+    };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-black">Materials Management</h1>
+    return (
+        <div className="space-y-6">
+            <h1 className="text-2xl font-bold">Material & Equipment Requests</h1>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
-                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
-                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Requested By</th>
-                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {requisitions.map((req: any) => (
-                <tr key={req._id}>
-                  <td className="py-4 px-6 text-sm font-medium text-gray-900">{req.items[0]?.name}</td>
-                  <td className="py-4 px-6 text-sm text-gray-500">{req.items[0]?.quantity} {req.items[0]?.unit}</td>
-                  <td className="py-4 px-6 text-sm text-gray-500">{req.requestedBy?.name}</td>
-                  <td className="py-4 px-6 text-sm font-bold text-gray-900">{req.status}</td>
-                  <td className="py-4 px-6 text-sm font-medium space-x-2">
-                    {req.status === 'Requested' && (
-                        <>
-                            <button onClick={() => updateStatus(req._id, 'Approved')} className="text-green-600 hover:text-green-900">Approve</button>
-                            <button onClick={() => updateStatus(req._id, 'Rejected')} className="text-red-600 hover:text-red-900">Reject</button>
-                        </>
-                    )}
-                    {req.status === 'Approved' && (
-                        <button onClick={() => updateStatus(req._id, 'Delivered')} className="text-blue-600 hover:text-blue-900">Mark Delivered</button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <table className="w-full text-left">
+                    <thead className="bg-slate-50 border-b">
+                        <tr>
+                            <th className="p-4 font-semibold text-slate-600">Requester</th>
+                            <th className="p-4 font-semibold text-slate-600">Type</th>
+                            <th className="p-4 font-semibold text-slate-600">Items</th>
+                            <th className="p-4 font-semibold text-slate-600">Urgency</th>
+                            <th className="p-4 font-semibold text-slate-600">Status</th>
+                            <th className="p-4 font-semibold text-slate-600 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                        {requests.map((req: any) => (
+                            <tr key={req._id} className="hover:bg-slate-50">
+                                <td className="p-4 font-medium">{req.requester?.name || 'Unknown'}</td>
+                                <td className="p-4 text-sm">{req.type || 'Material'}</td>
+                                <td className="p-4 text-sm">
+                                    <ul className="list-disc list-inside">
+                                        {req.items.map((i: any, idx: number) => (
+                                            <li key={idx}>{i.name} ({i.quantity} {i.unit})</li>
+                                        ))}
+                                    </ul>
+                                </td>
+                                <td className="p-4">
+                                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                                        req.urgency === 'High' ? 'bg-red-100 text-red-700' : 
+                                        req.urgency === 'Urgent' ? 'bg-red-100 text-red-700' :
+                                        'bg-blue-50 text-blue-600'
+                                    }`}>
+                                        {req.urgency}
+                                    </span>
+                                </td>
+                                <td className="p-4">
+                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                        req.status === 'Approved' ? 'bg-green-100 text-green-700' : 
+                                        req.status === 'Rejected' ? 'bg-red-100 text-red-700' : 
+                                        'bg-orange-100 text-orange-700'
+                                     }`}>
+                                        {req.status}
+                                     </span>
+                                </td>
+                                <td className="p-4 text-right space-x-2">
+                                    {req.status === 'Pending' && (
+                                        <>
+                                            <button onClick={() => updateStatus(req._id, 'Approved')} className="text-green-600 hover:bg-green-50 p-1 rounded" title="Approve">
+                                                <Check size={18} />
+                                            </button>
+                                            <button onClick={() => updateStatus(req._id, 'Rejected')} className="text-red-600 hover:bg-red-50 p-1 rounded" title="Reject">
+                                                <X size={18} />
+                                            </button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

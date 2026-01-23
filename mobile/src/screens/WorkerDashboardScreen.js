@@ -1,244 +1,132 @@
-import { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Image, TextInput } from 'react-native';
-import * as Location from 'expo-location';
-import * as ImagePicker from 'expo-image-picker';
-import NetInfo from '@react-native-community/netinfo';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useNavigation } from '@react-navigation/native';
 import api from '../services/api';
-import OfflineStorage from '../utils/offline';
+import { Ionicons } from '@expo/vector-icons';
 
 const WorkerDashboardScreen = () => {
-    const { t } = useLanguage();
-    const { logout, userInfo } = useContext(AuthContext);
-    const [location, setLocation] = useState(null);
-    const [attendanceStatus, setAttendanceStatus] = useState('Unknown');
-    const [logDescription, setLogDescription] = useState('');
-    const [image, setImage] = useState(null);
-    const [isConnected, setIsConnected] = useState(true);
+    const { userInfo, logout } = useContext(AuthContext);
+    const navigation = useNavigation();
+    const [refreshing, setRefreshing] = useState(false);
+    const [stats, setStats] = useState({
+        attendance: 'Not Checked In',
+        pendingTasks: 0
+    });
 
-    useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(state => {
-            setIsConnected(state.isConnected);
-            if (state.isConnected) {
-                syncOfflineLogs();
-            }
-        });
-
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission to access location was denied');
-                return;
-            }
-
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-        })();
-
-        if (isConnected) fetchAttendance();
-
-        return () => unsubscribe();
-    }, [isConnected]);
-
-    const syncOfflineLogs = async () => {
-        const logs = await OfflineStorage.getLogs();
-        if (logs.length === 0) return;
-
-        console.log('Syncing offline logs...', logs.length);
-        
-        for (const log of logs) {
-            try {
-                // Determine if photo was a URI string or something else
-                // Re-creating FormData might be tricky if image path is invalid now, but giving it a try
-                const formData = new FormData();
-                formData.append('description', log.description);
-                if (log.lat) formData.append('lat', log.lat);
-                if (log.lng) formData.append('lng', log.lng);
-                formData.append('date', log.date);
-
-                if (log.imageUri) {
-                    let filename = log.imageUri.split('/').pop();
-                    let match = /\.(\w+)$/.exec(filename);
-                    let type = match ? `image/${match[1]}` : `image`;
-                    formData.append('photo', { uri: log.imageUri, name: filename, type });
-                }
-
-                await api.post('/logs', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-            } catch (e) {
-                console.error('Failed to sync log', e);
-            }
-        }
-        await OfflineStorage.clearLogs();
-        Alert.alert('Sync Complete', 'Offline logs have been uploaded.');
-    };
-
-    const fetchAttendance = async () => {
+    const fetchDashboardData = async () => {
         try {
-            const res = await api.get('/attendance');
-            if (res.data.length > 0) {
-                const today = new Date().toDateString();
-                const lastRecord = res.data[0];
-                const recordDate = new Date(lastRecord.date).toDateString();
-                
-                if (today === recordDate) {
-                    setAttendanceStatus(lastRecord.checkOutTime ? 'Checked Out' : 'Checked In');
-                } else {
-                    setAttendanceStatus('Not Checked In');
-                }
-            } else {
-                setAttendanceStatus('Not Checked In');
+            // Get today's attendance
+            const attRes = await api.get('/attendance');
+            let status = 'Not Checked In';
+            if (attRes.data.length > 0) {
+                 const today = new Date().toDateString();
+                 const lastRecord = attRes.data[0];
+                 const recordDate = new Date(lastRecord.date).toDateString();
+                 if (today === recordDate) {
+                     status = lastRecord.checkOutTime ? 'Checked Out' : 'Checked In';
+                 }
             }
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
-    const handleCheckIn = async () => {
-        if (!isConnected) {
-            Alert.alert('Offline', 'You need internet to Check In/Out for Geo-verification.');
-            return;
-        }
-        if (!location) {
-            Alert.alert('Wait', 'Fetching location...');
-            return;
-        }
-        try {
-            await api.post('/attendance/checkin', {
-                lat: location.coords.latitude,
-                lng: location.coords.longitude,
+            // Get pending tasks count
+            const taskRes = await api.get('/tasks');
+            const pending = taskRes.data.filter(t => t.status === 'Pending' || t.status === 'In Progress').length;
+
+            setStats({
+                attendance: status,
+                pendingTasks: pending
             });
-            setAttendanceStatus('Checked In');
-            Alert.alert('Success', 'Checked In Successfully');
         } catch (error) {
-            Alert.alert('Error', error.response?.data?.message || 'Check-in failed');
+            console.error(error);
         }
     };
 
-    const handleCheckOut = async () => {
-        if (!isConnected) {
-            Alert.alert('Offline', 'You need internet to Check In/Out.');
-            return;
-        }
-        try {
-            await api.post('/attendance/checkout');
-            setAttendanceStatus('Checked Out');
-            Alert.alert('Success', 'Checked Out Successfully');
-        } catch (error) {
-            Alert.alert('Error', 'Check-out failed');
-        }
-    };
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 0.5,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
-    const submitLog = async () => {
-        if (!logDescription) {
-            Alert.alert('Error', 'Please provide description');
-            return;
-        }
-        
-        if (!isConnected) {
-            // Save Offline
-            const logData = {
-                description: logDescription,
-                lat: location?.coords?.latitude,
-                lng: location?.coords?.longitude,
-                imageUri: image,
-                date: new Date().toISOString()
-            };
-            await OfflineStorage.saveLog(logData);
-            Alert.alert('Offline', 'Log saved locally. Will sync when online.');
-            setLogDescription('');
-            setImage(null);
-            return;
-        }
-
+    // New function for submitting daily work log
+    const submitDailyWorkLog = async () => {
         const formData = new FormData();
-        formData.append('description', logDescription);
-        if (location) {
-            formData.append('lat', location.coords.latitude);
-            formData.append('lng', location.coords.longitude);
-        }
-        
+
         if (image) {
             let filename = image.split('/').pop();
             let match = /\.(\w+)$/.exec(filename);
             let type = match ? `image/${match[1]}` : `image`;
-            formData.append('photo', { uri: image, name: filename, type });
+            formData.append('photos', { uri: image, name: filename, type });
         }
+        
+        formData.append('type', 'WorkerLog');
+        formData.append('date', new Date().toISOString());
+        formData.append('workSummary', logDescription);
 
         try {
-            await api.post('/logs', formData, {
+            await api.post('/reports', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            Alert.alert('Success', 'Daily Log Submitted');
+            Alert.alert('Success', 'Daily Work Log Submitted');
             setLogDescription('');
             setImage(null);
         } catch (error) {
-            Alert.alert('Error', 'Log submission failed');
-            console.log(error);
+            console.error('Error submitting daily work log:', error);
+            Alert.alert('Error', 'Failed to submit daily work log.');
         }
     };
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchDashboardData();
+        setRefreshing(false);
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView 
+            contentContainerStyle={styles.container}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
             <View style={styles.header}>
-                <Text style={styles.title}>{t('welcome')}, {userInfo?.name}</Text>
-                <TouchableOpacity onPress={logout}><Text style={styles.logout}>{t('logout')}</Text></TouchableOpacity>
-            </View>
-            
-            {!isConnected && <View style={styles.offlineBanner}><Text style={styles.bannerText}>You are Offline</Text></View>}
-
-            <View style={styles.card}>
-                <Text style={styles.heading}>{t('attendance')}</Text>
-                <Text style={styles.status}>Status: {attendanceStatus}</Text>
-                <View style={styles.row}>
-                    <TouchableOpacity 
-                        style={[styles.btn, attendanceStatus === 'Checked In' && styles.disabled]} 
-                        onPress={handleCheckIn}
-                        disabled={attendanceStatus === 'Checked In'}
-                    >
-                        <Text style={styles.btnText}>{t('checkIn')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={[styles.btn, attendanceStatus !== 'Checked In' && styles.disabled]} 
-                        onPress={handleCheckOut}
-                        disabled={attendanceStatus !== 'Checked In'}
-                    >
-                        <Text style={styles.btnText}>{t('checkOut')}</Text>
-                    </TouchableOpacity>
+                <View>
+                    <Text style={styles.greeting}>Hello,</Text>
+                    <Text style={styles.name}>{userInfo?.name}</Text>
+                    <Text style={styles.role}>{userInfo?.role}</Text>
                 </View>
+                <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
+                    <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+                </TouchableOpacity>
             </View>
 
-            <View style={styles.card}>
-                <Text style={styles.heading}>{t('dailyLog')}</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder={t('description')}
-                    multiline
-                    value={logDescription}
-                    onChangeText={setLogDescription}
-                />
-                <TouchableOpacity style={styles.imgBtn} onPress={pickImage}>
-                    <Text style={styles.btnText}>{t('photo')}</Text>
+            <View style={styles.statusCard}>
+                <Text style={styles.cardTitle}>Today's Status</Text>
+                <View style={styles.statusRow}>
+                    <Ionicons 
+                        name={stats.attendance === 'Checked In' ? "checkmark-circle" : "time-outline"} 
+                        size={32} 
+                        color={stats.attendance === 'Checked In' ? "#34C759" : "#FF9500"} 
+                    />
+                    <Text style={styles.statusText}>{stats.attendance}</Text>
+                </View>
+                {stats.attendance === 'Not Checked In' && (
+                    <TouchableOpacity 
+                        style={styles.actionBtn}
+                        onPress={() => navigation.navigate('Attendance')} // This will be in the tab bar, maybe navigate to tab?
+                        // Or better, just use the Attendance components here or navigate to a dedicated CheckIn screen
+                    >
+                        <Text style={styles.btnText}>Go to Check In</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <View style={styles.grid}>
+                <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Tasks')}>
+                    <Ionicons name="clipboard-outline" size={32} color="#007AFF" />
+                    <Text style={styles.gridValue}>{stats.pendingTasks}</Text>
+                    <Text style={styles.gridLabel}>Pending Tasks</Text>
                 </TouchableOpacity>
-                {image && <Image source={{ uri: image }} style={styles.preview} />}
-                
-                <TouchableOpacity style={styles.submitBtn} onPress={submitLog}>
-                    <Text style={styles.btnText}>{t('submit')}</Text>
+
+                <TouchableOpacity style={styles.gridItem}>
+                    <Ionicons name="warning-outline" size={32} color="#FF9500" />
+                    <Text style={styles.gridValue}>0</Text>
+                    <Text style={styles.gridLabel}>Issues</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -246,23 +134,22 @@ const WorkerDashboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 20, paddingTop: 50 },
-    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-    title: { fontSize: 20, fontWeight: 'bold' },
-    logout: { color: 'red' },
-    card: { backgroundColor: 'white', padding: 15, borderRadius: 10, marginBottom: 20, elevation: 2 },
-    heading: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
-    status: { marginBottom: 10, color: '#555' },
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    btn: { backgroundColor: 'green', padding: 10, borderRadius: 5, width: '45%', alignItems: 'center' },
-    disabled: { backgroundColor: '#ccc' },
-    btnText: { color: 'white', fontWeight: 'bold' },
-    input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 5, padding: 10, height: 80, textAlignVertical: 'top', marginBottom: 10 },
-    imgBtn: { backgroundColor: '#007AFF', padding: 10, borderRadius: 5, alignItems: 'center', marginBottom: 10 },
-    preview: { width: '100%', height: 200, borderRadius: 10, marginBottom: 10 },
-    submitBtn: { backgroundColor: '#000', padding: 15, borderRadius: 5, alignItems: 'center' },
-    offlineBanner: { backgroundColor: 'red', padding: 10, alignItems: 'center', marginBottom: 10, borderRadius: 5 },
-    bannerText: { color: 'white', fontWeight: 'bold' }
+    container: { padding: 20, paddingTop: 60, flex: 1, backgroundColor: '#F2F2F7' },
+    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25 },
+    greeting: { fontSize: 16, color: '#8E8E93' },
+    name: { fontSize: 24, fontWeight: 'bold', color: '#000' },
+    role: { fontSize: 14, color: '#007AFF', marginTop: 2 },
+    logoutBtn: { padding: 5 },
+    statusCard: { backgroundColor: 'white', padding: 20, borderRadius: 15, marginBottom: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
+    cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 15, color: '#3A3A3C' },
+    statusRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
+    statusText: { fontSize: 20, fontWeight: 'bold', marginLeft: 10, color: '#000' },
+    actionBtn: { backgroundColor: '#007AFF', padding: 12, borderRadius: 10, alignItems: 'center' },
+    btnText: { color: 'white', fontWeight: '600' },
+    grid: { flexDirection: 'row', justifyContent: 'space-between' },
+    gridItem: { backgroundColor: 'white', padding: 20, borderRadius: 15, width: '48%', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
+    gridValue: { fontSize: 28, fontWeight: 'bold', marginVertical: 5 },
+    gridLabel: { color: '#8E8E93' }
 });
 
 export default WorkerDashboardScreen;

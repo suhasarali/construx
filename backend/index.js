@@ -20,9 +20,9 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
-app.use('/api/materials', require('./routes/materialRoutes'));
-app.use('/api/logs', require('./routes/dailyLogRoutes'));
-app.use('/api/invoices', require('./routes/invoiceRoutes'));
+app.use('/api/requests', require('./routes/requestRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
+app.use('/api/messages', require('./routes/messageRoutes'));
 
 // Serve Uploads
 app.use('/uploads', express.static('uploads'));

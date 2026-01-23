@@ -50,11 +50,11 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const [attRes, tasksRes, logsRes, matRes] = await Promise.all([
+      const [attRes, tasksRes, logsRes, reqRes] = await Promise.all([
         api.get('/attendance'),
         api.get('/tasks'),
-        api.get('/logs'),
-        api.get('/materials')
+        api.get('/reports'), // logs was also removed/merged into reports? No, reports endpoint handles all.
+        api.get('/requests')
       ]);
 
       setStats({
@@ -62,11 +62,11 @@ export default function Dashboard() {
         tasksPending: tasksRes.data.filter((t: any) => t.status === 'Pending').length,
         tasksCompleted: tasksRes.data.filter((t: any) => t.status === 'Completed').length,
         totalLogs: logsRes.data.length,
-        materialRequests: matRes.data.length,
-        pendingMaterials: matRes.data.filter((m: any) => m.status === 'Requested').length
+        materialRequests: reqRes.data.length,
+        pendingMaterials: reqRes.data.filter((m: any) => m.status === 'Pending').length
       });
 
-      setRecentMaterials(matRes.data.slice(0, 5));
+      setRecentMaterials(reqRes.data.slice(0, 5));
     } catch (error) {
       console.error(error);
     }

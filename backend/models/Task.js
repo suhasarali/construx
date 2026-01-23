@@ -19,7 +19,23 @@ const taskSchema = new mongoose.Schema({
         enum: ['Pending', 'In Progress', 'Completed'],
         default: 'Pending',
     },
+    priority: {
+        type: String,
+        enum: ['Low', 'Medium', 'High', 'Urgent'],
+        default: 'Medium'
+    },
+    siteLocation: {
+        lat: Number,
+        lng: Number, 
+        address: String
+    },
     deadline: Date,
+    completedAt: Date,
+    progress: { // 0 to 100
+        type: Number,
+        default: 0
+    },
+    proofPhotos: [String] // URLs for completion proof
 }, { timestamps: true });
 
 module.exports = mongoose.model('Task', taskSchema);

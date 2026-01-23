@@ -1,0 +1,38 @@
+const mongoose = require('mongoose');
+
+const requestSchema = new mongoose.Schema({
+    requester: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['Material', 'Equipment', 'Other'],
+        required: true
+    },
+    items: [{
+        name: String,
+        quantity: Number,
+        unit: String,
+        comments: String
+    }],
+    siteLocation: {
+        lat: Number,
+        lng: Number, 
+        address: String
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Partially_Approved', 'Rejected', 'Fulfilled'],
+        default: 'Pending'
+    },
+    adminComments: String,
+    urgency: {
+        type: String,
+        enum: ['Low', 'Medium', 'High', 'Critical'],
+        default: 'Medium'
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('Request', requestSchema);
