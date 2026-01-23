@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, Modal, ScrollView } from 'react-native';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -12,10 +12,15 @@ const RequestScreen = () => {
     const [itemName, setItemName] = useState('');
     const [quantity, setQuantity] = useState('');
     const [unit, setUnit] = useState('');
-    const [urgency, setUrgency] = useState('Normal');
+    const [urgency, setUrgency] = useState('Medium');
+
+    // Presets
+    const [presets, setPresets] = useState([]);
+    const [showPresets, setShowPresets] = useState(false);
 
     useEffect(() => {
         fetchRequests();
+        fetchPresets();
     }, []);
 
     const fetchRequests = async () => {
@@ -26,6 +31,15 @@ const RequestScreen = () => {
             console.error(error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchPresets = async () => {
+        try {
+            const res = await api.get('/requests/presets');
+            setPresets(res.data);
+        } catch (error) {
+            console.error("Failed to fetch presets", error);
         }
     };
 
@@ -47,10 +61,17 @@ const RequestScreen = () => {
             setItemName('');
             setQuantity('');
             setUnit('');
+            setUrgency('Medium');
             fetchRequests();
         } catch (error) {
             Alert.alert('Error', 'Failed to submit request');
         }
+    };
+
+    const selectPreset = (preset) => {
+        setItemName(preset.name);
+        setUnit(preset.unit);
+        setShowPresets(false);
     };
 
     const renderItem = ({ item }) => (
@@ -62,7 +83,10 @@ const RequestScreen = () => {
             {item.items.map((i, index) => (
                 <Text key={index} style={styles.itemText}>• {i.name}: {i.quantity} {i.unit}</Text>
             ))}
-            <Text style={styles.meta}>Urgency: {item.urgency}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 5}}>
+                <Text style={styles.meta}>Urgency: {item.urgency}</Text>
+                {item.payment?.status === 'Paid' && <Text style={{color: 'green', fontWeight: 'bold'}}>Paid</Text>}
+            </View>
             <Text style={styles.meta}>Date: {new Date(item.createdAt).toLocaleDateString()}</Text>
         </View>
     );
@@ -88,30 +112,56 @@ const RequestScreen = () => {
                  <View style={styles.modalBg}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalHeader}>New Request</Text>
-                        <TextInput style={styles.input} placeholder="Item Name" value={itemName} onChangeText={setItemName} />
-                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                             <TextInput style={[styles.input, {width:'48%'}]} placeholder="Qty" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
-                             <TextInput style={[styles.input, {width:'48%'}]} placeholder="Unit" value={unit} onChangeText={setUnit} />
-                        </View>
                         
-                        <Text style={{marginBottom:10, fontWeight:'bold'}}>Urgency:</Text>
-                        <View style={styles.row}>
-                             <TouchableOpacity style={[styles.prioBtn, urgency==='High' && styles.activePrio]} onPress={() => setUrgency('High')}>
-                                <Text style={urgency==='High' ? styles.activeText : styles.text}>High</Text>
-                             </TouchableOpacity>
-                             <TouchableOpacity style={[styles.prioBtn, urgency==='Normal' && styles.activePrio]} onPress={() => setUrgency('Normal')}>
-                                <Text style={urgency==='Normal' ? styles.activeText : styles.text}>Normal</Text>
-                             </TouchableOpacity>
-                        </View>
+                        <Text style={styles.label}>Select Material:</Text>
+                        <TouchableOpacity style={styles.input} onPress={() => setShowPresets(!showPresets)}>
+                            <Text style={{color: itemName ? 'black' : '#999'}}>{itemName || "Select Material..."}</Text>
+                        </TouchableOpacity>
 
-                        <View style={styles.modalBtns}>
-                            <TouchableOpacity style={styles.cancelBtn} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.btnText}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.saveBtn} onPress={submitRequest}>
-                                <Text style={[styles.btnText, {color:'white'}]}>Submit</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {showPresets && (
+                            <View style={styles.presetList}>
+                                <ScrollView nestedScrollEnabled style={{maxHeight: 150}}>
+                                    {presets.map((p) => (
+                                        <TouchableOpacity key={p._id} style={styles.presetItem} onPress={() => selectPreset(p)}>
+                                            <Text>{p.name} ({p.unit})</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
+
+                        {!showPresets && (
+                            <>
+                                <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                                     <TextInput style={[styles.input, {width:'48%'}]} placeholder="Qty" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
+                                     <TextInput style={[styles.input, {width:'48%', backgroundColor: '#f0f0f0'}]} placeholder="Unit" value={unit} editable={false} />
+                                </View>
+                                
+                                <Text style={styles.label}>Urgency:</Text>
+                                <View style={styles.row}>
+                                     <TouchableOpacity style={[styles.prioBtn, urgency==='High' && styles.activePrio]} onPress={() => setUrgency('High')}>
+                                        <Text style={urgency==='High' ? styles.activeText : styles.text}>High</Text>
+                                     </TouchableOpacity>
+                                     <TouchableOpacity style={[styles.prioBtn, urgency==='Medium' && styles.activePrio]} onPress={() => setUrgency('Medium')}>
+                                        <Text style={urgency==='Medium' ? styles.activeText : styles.text}>Medium</Text>
+                                     </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.modalBtns}>
+                                    <TouchableOpacity style={styles.cancelBtn} onPress={() => setModalVisible(false)}>
+                                        <Text style={styles.btnText}>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.saveBtn} onPress={submitRequest}>
+                                        <Text style={[styles.btnText, {color:'white'}]}>Submit</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+                        {showPresets && (
+                             <TouchableOpacity style={[styles.cancelBtn, {width: '100%', marginTop: 10}]} onPress={() => setShowPresets(false)}>
+                                <Text style={styles.btnText}>Close List</Text>
+                             </TouchableOpacity>
+                        )}
                     </View>
                 </View>
             </Modal>
@@ -142,7 +192,10 @@ const styles = StyleSheet.create({
     modalBtns: { flexDirection: 'row', justifyContent: 'space-between' },
     cancelBtn: { padding: 15, width: '45%', alignItems: 'center' },
     saveBtn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, width: '45%', alignItems: 'center' },
-    btnText: { fontWeight: 'bold' }
+    btnText: { fontWeight: 'bold' },
+    label: { marginBottom: 5, fontWeight: '600', color: '#333' },
+    presetList: { maxHeight: 200, borderWidth: 1, borderColor: '#eee', borderRadius: 8, marginBottom: 15 },
+    presetItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' }
 });
 
 export default RequestScreen;
