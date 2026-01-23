@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const User = require('./models/User');
-const connectDB = require('./config/db');
+import dotenv from 'dotenv';
+import User from './models/User';
+import connectDB from './config/db';
 
 dotenv.config();
 connectDB();
@@ -14,7 +13,7 @@ const seedUsers = async () => {
         } catch (err) {
             console.log("No indexes to drop or collection doesn't exist yet");
         }
-        
+
         await User.deleteMany(); // Clear existing users
 
         const users = [

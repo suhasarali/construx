@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const attendanceSchema = new mongoose.Schema({
     user: {
@@ -29,9 +29,9 @@ const attendanceSchema = new mongoose.Schema({
         withinFence: Boolean
     },
     checkInPhoto: String, // URL/Path to selfie
-    checkOutPhoto: String, 
+    checkOutPhoto: String,
     status: {
-        type: String, 
+        type: String,
         enum: ['Present', 'Absent', 'Half-day', 'Pending_Approval', 'Rejected'],
         default: 'Absent',
     },
@@ -44,4 +44,6 @@ const attendanceSchema = new mongoose.Schema({
 // Compound index to ensure one record per user per day
 attendanceSchema.index({ user: 1, date: 1 }, { unique: true });
 
-module.exports = mongoose.model('Attendance', attendanceSchema);
+const Attendance = mongoose.model('Attendance', attendanceSchema);
+
+export default Attendance;

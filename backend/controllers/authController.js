@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+import User from '../models/User';
+import jwt from 'jsonwebtoken';
 
 const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, {
@@ -10,7 +10,7 @@ const generateToken = (id, role) => {
 // @desc    Get All Users (Admin/Manager)
 // @route   GET /api/auth/users
 // @access  Manager, Owner
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
     try {
         const users = await User.find({}).sort({ createdAt: -1 });
         res.json(users);
@@ -22,7 +22,7 @@ exports.getUsers = async (req, res) => {
 // @desc    Delete User
 // @route   DELETE /api/auth/users/:id
 // @access  Manager, Owner
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
         res.json({ message: 'User deleted' });
@@ -34,7 +34,7 @@ exports.deleteUser = async (req, res) => {
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public (or Admin only later)
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     try {
         const { name, email, phone, password, role, siteId, profileImage } = req.body;
 
@@ -50,7 +50,7 @@ exports.registerUser = async (req, res) => {
             phone,
             password,
             role,
-            siteId, 
+            siteId,
             profileImage
         });
 
@@ -72,7 +72,7 @@ exports.registerUser = async (req, res) => {
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     try {
         const { phone, password } = req.body;
 

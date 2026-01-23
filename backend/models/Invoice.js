@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const invoiceSchema = new mongoose.Schema({
     invoiceNumber: {
@@ -34,4 +34,6 @@ const invoiceSchema = new mongoose.Schema({
     pdfUrl: String, // Path to generated PDF
 }, { timestamps: true });
 
-module.exports = mongoose.model('Invoice', invoiceSchema);
+const Invoice = mongoose.model('Invoice', invoiceSchema);
+
+export default Invoice;

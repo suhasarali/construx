@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const taskSchema = new mongoose.Schema({
     title: {
@@ -26,7 +26,7 @@ const taskSchema = new mongoose.Schema({
     },
     siteLocation: {
         lat: Number,
-        lng: Number, 
+        lng: Number,
         address: String
     },
     deadline: Date,
@@ -38,4 +38,6 @@ const taskSchema = new mongoose.Schema({
     proofPhotos: [String] // URLs for completion proof
 }, { timestamps: true });
 
-module.exports = mongoose.model('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema);
+
+export default Task;

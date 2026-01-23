@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const reportSchema = new mongoose.Schema({
     submittedBy: {
@@ -17,7 +17,7 @@ const reportSchema = new mongoose.Schema({
     },
     siteLocation: {
         lat: Number,
-        lng: Number, 
+        lng: Number,
         address: String
     },
     workSummary: {
@@ -41,4 +41,6 @@ const reportSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Report', reportSchema);
+const Report = mongoose.model('Report', reportSchema);
+
+export default Report;

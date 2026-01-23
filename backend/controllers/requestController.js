@@ -1,9 +1,9 @@
-const Request = require('../models/Request');
+import Request from '../models/Request';
 
 // @desc    Create a request
 // @route   POST /api/requests
 // @access  Site_Engineer
-exports.createRequest = async (req, res) => {
+export const createRequest = async (req, res) => {
     try {
         const { type, items, siteLocation, urgency } = req.body;
 
@@ -24,17 +24,17 @@ exports.createRequest = async (req, res) => {
 // @desc    Get all requests
 // @route   GET /api/requests
 // @access  Manager (All), Engineer (Own)
-exports.getRequests = async (req, res) => {
+export const getRequests = async (req, res) => {
     try {
         let query = {};
         if (req.user.role === 'Site_Engineer') {
             query.requester = req.user.id;
         }
-        
+
         const requests = await Request.find(query)
             .populate('requester', 'name role')
             .sort({ createdAt: -1 });
-            
+
         res.json(requests);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -44,16 +44,16 @@ exports.getRequests = async (req, res) => {
 // @desc    Update request status (Approve/Reject)
 // @route   PUT /api/requests/:id
 // @access  Manager
-exports.updateRequestStatus = async (req, res) => {
+export const updateRequestStatus = async (req, res) => {
     try {
         const { status, adminComments } = req.body;
-        
+
         if (req.user.role !== 'Manager' && req.user.role !== 'Owner') {
             return res.status(403).json({ message: 'Not authorized to approve requests' });
         }
 
         const request = await Request.findByIdAndUpdate(
-            req.params.id, 
+            req.params.id,
             { status, adminComments },
             { new: true }
         );

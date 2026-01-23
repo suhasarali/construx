@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const dailyLogSchema = new mongoose.Schema({
     user: {
@@ -21,4 +21,6 @@ const dailyLogSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-module.exports = mongoose.model('DailyLog', dailyLogSchema);
+const DailyLog = mongoose.model('DailyLog', dailyLogSchema);
+
+export default DailyLog;

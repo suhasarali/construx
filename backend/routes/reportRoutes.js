@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import { createReport, getReports } from "../controllers/reportController";
+import { protect } from "../middleware/authMiddleware";
+import upload from "../utils/upload";
+
 const router = express.Router();
-const { createReport, getReports } = require('../controllers/reportController');
-const { protect } = require('../middleware/authMiddleware');
-const upload = require('../utils/upload');
 
 router.post('/', protect, upload.array('photos', 5), createReport);
 router.get('/', protect, getReports);
 
-module.exports = router;
+export default router;

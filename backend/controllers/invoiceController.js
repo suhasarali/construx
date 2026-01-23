@@ -1,9 +1,11 @@
-const Invoice = require('../models/Invoice');
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const path = require('path');
+import Invoice from '../models/Invoice';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
 
-exports.createInvoice = async (req, res) => {
+// @desc    Create Invoice
+// @route   POST /api/invoices
+// @access  Manager, Site_Engineer
+export const createInvoice = async (req, res) => {
     try {
         const { clientName, clientGSTIN, items, taxRate = 18 } = req.body;
 
@@ -16,7 +18,7 @@ exports.createInvoice = async (req, res) => {
 
         const taxAmount = (subTotal * taxRate) / 100;
         const totalAmount = subTotal + taxAmount;
-        
+
         // Simple equal split for demo
         const cgst = taxAmount / 2;
         const sgst = taxAmount / 2;
@@ -40,10 +42,10 @@ exports.createInvoice = async (req, res) => {
         // Generate PDF
         const doc = new PDFDocument();
         const pdfPath = `uploads/invoices/${invoiceNumber}.pdf`;
-        
+
         // Ensure directory exists
         const dir = 'uploads/invoices';
-        if (!fs.existsSync(dir)){
+        if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
 
@@ -77,7 +79,10 @@ exports.createInvoice = async (req, res) => {
     }
 };
 
-exports.getInvoices = async (req, res) => {
+// @desc    Get Invoices
+// @route   GET /api/invoices
+// @access  Manager, Site_Engineer
+export const getInvoices = async (req, res) => {
     try {
         const invoices = await Invoice.find().sort({ createdAt: -1 });
         res.json(invoices);

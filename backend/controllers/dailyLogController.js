@@ -1,9 +1,12 @@
-const DailyLog = require('../models/DailyLog');
+import DailyLog from '../models/DailyLog';
 
-exports.createLog = async (req, res) => {
+// @desc    Create Log
+// @route   POST /api/daily-logs
+// @access  Worker
+export const createLog = async (req, res) => {
     try {
         const { description, lat, lng, date } = req.body;
-        
+
         // Photo path from multer
         const photoUrl = req.file ? req.file.path : null;
 
@@ -21,7 +24,10 @@ exports.createLog = async (req, res) => {
     }
 };
 
-exports.getLogs = async (req, res) => {
+// @desc    Get Logs
+// @route   GET /api/daily-logs
+// @access  Worker
+export const getLogs = async (req, res) => {
     try {
         let query = {};
         // If Worker, own logs. Manager, all logs.

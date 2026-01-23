@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import { createLog, getLogs } from "../controllers/dailyLogController";
+import { protect } from "../middleware/authMiddleware";
+import upload from "../utils/upload";
+
 const router = express.Router();
-const { createLog, getLogs } = require('../controllers/dailyLogController');
-const { protect } = require('../middleware/authMiddleware');
-const upload = require('../utils/upload');
 
 router.post('/', protect, upload.single('photo'), createLog);
 router.get('/', protect, getLogs);
 
-module.exports = router;
+export default router;

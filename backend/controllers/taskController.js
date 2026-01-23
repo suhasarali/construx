@@ -1,9 +1,9 @@
-const Task = require('../models/Task');
+import Task from '../models/Task';
 
 // @desc    Create a new task
 // @route   POST /api/tasks
 // @access  Manager/Engineer
-exports.createTask = async (req, res) => {
+export const createTask = async (req, res) => {
     try {
         const { title, description, assignedTo, priority, siteLocation, deadline, assignToAll } = req.body;
 
@@ -48,7 +48,7 @@ exports.createTask = async (req, res) => {
 // @desc    Get tasks for logged in user
 // @route   GET /api/tasks
 // @access  Private
-exports.getTasks = async (req, res) => {
+export const getTasks = async (req, res) => {
     try {
         let query = {};
         if (req.user.role === 'Worker') {
@@ -76,7 +76,7 @@ exports.getTasks = async (req, res) => {
 // @desc    Update task status
 // @route   PUT /api/tasks/:id
 // @access  Worker (update status) / Manager (update all)
-exports.updateTask = async (req, res) => {
+export const updateTask = async (req, res) => {
     try {
         const { status, progress, proofPhotos } = req.body;
         const task = await Task.findById(req.params.id);
@@ -100,9 +100,9 @@ exports.updateTask = async (req, res) => {
 
         task.status = status || task.status;
         task.progress = progress || task.progress;
-        
+
         if (proofPhotos) {
-             task.proofPhotos = proofPhotos; // Expecting array of URLs
+            task.proofPhotos = proofPhotos; // Expecting array of URLs
         }
 
         if (status === 'Completed') {

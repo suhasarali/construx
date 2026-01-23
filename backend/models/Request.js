@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const requestSchema = new mongoose.Schema({
     requester: {
@@ -19,7 +19,7 @@ const requestSchema = new mongoose.Schema({
     }],
     siteLocation: {
         lat: Number,
-        lng: Number, 
+        lng: Number,
         address: String
     },
     status: {
@@ -35,4 +35,6 @@ const requestSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Request', requestSchema);
+const Request = mongoose.model('Request', requestSchema);
+
+export default Request;

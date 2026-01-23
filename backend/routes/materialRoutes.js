@@ -7,4 +7,4 @@ router.post('/', protect, authorize('Engineer', 'Manager', 'Owner'), createRequi
 router.get('/', protect, getRequisitions);
 router.put('/:id/status', protect, authorize('Manager', 'Owner'), updateRequisitionStatus);
 
-module.exports = router;
+export default router;

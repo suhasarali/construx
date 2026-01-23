@@ -1,9 +1,9 @@
-const Message = require('../models/Message');
+import Message from '../models/Message';
 
-// @desc    Send Message (Broadcast or Query)
+// @desc    Send Message
 // @route   POST /api/messages
-// @access  All (Permissions checked inside)
-exports.sendMessage = async (req, res) => {
+// @access  Manager, Site_Engineer
+export const sendMessage = async (req, res) => {
     try {
         const { type, title, content, targetRoles, targetUsers, priority, parentMessage } = req.body;
 
@@ -31,15 +31,15 @@ exports.sendMessage = async (req, res) => {
 
 // @desc    Get Messages
 // @route   GET /api/messages
-// @access  All
-exports.getMessages = async (req, res) => {
+// @access  Manager, Site_Engineer
+export const getMessages = async (req, res) => {
     try {
         // Find messages where:
         // 1. TargetRoles includes user's role
         // 2. OR TargetUsers includes user's ID
         // 3. OR Sender is user (to see sent messages)
         // 4. OR it is a Broadcast (visible to all relevant roles)
-        
+
         const query = {
             $or: [
                 { targetRoles: req.user.role },

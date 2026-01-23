@@ -1,18 +1,19 @@
-const Attendance = require('../models/Attendance');
-const User = require('../models/User');
-const { getDistance } = require('../utils/geoUtils');
+import Attendance from '../models/Attendance';
+import { getDistance } from '../utils/geoUtils';
 
 // Temporary hardcoded site checking
 const SITE_LOCATION = { lat: 12.9716, lng: 77.5946 }; // Example
 const ALLOWED_RADIUS = 500; // meters
 
 
-
-exports.checkIn = async (req, res) => {
+// @desc    Check In
+// @route   POST /api/attendance/check-in
+// @access  Worker
+export const checkIn = async (req, res) => {
     try {
         const { lat, lng, address } = req.body;
         const userId = req.user.id; // From middleware
-        
+
         // Log received data for debugging
         console.log('CheckIn Data:', { lat, lng, userId, file: req.file });
 
@@ -34,9 +35,9 @@ exports.checkIn = async (req, res) => {
             user: userId,
             date: today,
             checkInTime: new Date(),
-            checkInLocation: { 
-                lat, 
-                lng, 
+            checkInLocation: {
+                lat,
+                lng,
                 address,
                 withinFence
             },
@@ -51,7 +52,10 @@ exports.checkIn = async (req, res) => {
     }
 };
 
-exports.checkOut = async (req, res) => {
+// @desc    Check Out
+// @route   POST /api/attendance/check-out
+// @access  Worker
+export const checkOut = async (req, res) => {
     try {
         const { lat, lng, address } = req.body;
         const userId = req.user.id;
@@ -86,7 +90,10 @@ exports.checkOut = async (req, res) => {
     }
 };
 
-exports.getAttendance = async (req, res) => {
+// @desc    Get Attendance
+// @route   GET /api/attendance
+// @access  Worker
+export const getAttendance = async (req, res) => {
     try {
         const attendance = await Attendance.find({ user: req.user.id }).sort({ date: -1 });
         res.json(attendance);
@@ -98,17 +105,17 @@ exports.getAttendance = async (req, res) => {
 // @desc    Get All Attendance for Site (Engineer/Manager)
 // @route   GET /api/attendance/site
 // @access  Manager, Site_Engineer
-exports.getSiteAttendance = async (req, res) => {
+export const getSiteAttendance = async (req, res) => {
     try {
         // ideally filter by siteId if user has one, or return all for now
         // For MVP, return all attendance records for today
         const today = new Date();
-        today.setHours(0,0,0,0);
-        
+        today.setHours(0, 0, 0, 0);
+
         const attendance = await Attendance.find({
             date: { $gte: today }
         }).populate('user', 'name role email');
-        
+
         res.json(attendance);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -118,7 +125,7 @@ exports.getSiteAttendance = async (req, res) => {
 // @desc    Verify Attendance (Engineer/Manager)
 // @route   PUT /api/attendance/:id/verify
 // @access  Manager, Site_Engineer
-exports.verifyAttendance = async (req, res) => {
+export const verifyAttendance = async (req, res) => {
     try {
         const { status } = req.body; // 'Present', 'Rejected', etc.
         const attendance = await Attendance.findById(req.params.id);

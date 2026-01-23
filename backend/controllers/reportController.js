@@ -1,9 +1,9 @@
-const Report = require('../models/Report');
+import Report from '../models/Report';
 
 // @desc    Create DPR
 // @route   POST /api/reports
 // @access  Site_Engineer
-exports.createReport = async (req, res) => {
+export const createReport = async (req, res) => {
     try {
         const { date, siteLocation, workSummary, laborCount, issuesRaised, remarks, type } = req.body;
         const photos = req.files ? req.files.map(file => ({ url: file.path })) : [];
@@ -29,7 +29,7 @@ exports.createReport = async (req, res) => {
 // @desc    Get Reports
 // @route   GET /api/reports
 // @access  Manager, Site_Engineer
-exports.getReports = async (req, res) => {
+export const getReports = async (req, res) => {
     try {
         let query = {};
         if (req.user.role === 'Site_Engineer' || req.user.role === 'Worker') {

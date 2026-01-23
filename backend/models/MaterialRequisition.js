@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const materialRequisitionSchema = new mongoose.Schema({
     items: [{
@@ -23,4 +23,6 @@ const materialRequisitionSchema = new mongoose.Schema({
     comments: String,
 }, { timestamps: true });
 
-module.exports = mongoose.model('MaterialRequisition', materialRequisitionSchema);
+const MaterialRequisition = mongoose.model('MaterialRequisition', materialRequisitionSchema);
+
+export default MaterialRequisition;

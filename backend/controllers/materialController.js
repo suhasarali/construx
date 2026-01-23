@@ -1,6 +1,9 @@
-const MaterialRequisition = require('../models/MaterialRequisition');
+import MaterialRequisition from '../models/MaterialRequisition';
 
-exports.createRequisition = async (req, res) => {
+// @desc    Create Requisition
+// @route   POST /api/material-requisitions
+// @access  Engineer
+export const createRequisition = async (req, res) => {
     try {
         const { items, siteLocation, comments } = req.body;
 
@@ -17,7 +20,10 @@ exports.createRequisition = async (req, res) => {
     }
 };
 
-exports.getRequisitions = async (req, res) => {
+// @desc    Get Requisitions
+// @route   GET /api/material-requisitions
+// @access  Engineer
+export const getRequisitions = async (req, res) => {
     try {
         // If Worker/Engineer, see only own. Manager/Owner see all?
         // Requirement: Engineer raises, Manager approves.
@@ -25,18 +31,18 @@ exports.getRequisitions = async (req, res) => {
         if (req.user.role === 'Engineer') {
             query = { requestedBy: req.user.id };
         }
-        
+
         const requisitions = await MaterialRequisition.find(query)
             .populate('requestedBy', 'name')
             .sort({ createdAt: -1 });
-            
+
         res.json(requisitions);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-exports.updateRequisitionStatus = async (req, res) => {
+export const updateRequisitionStatus = async (req, res) => {
     try {
         const { status } = req.body;
         const requisition = await MaterialRequisition.findById(req.params.id);
