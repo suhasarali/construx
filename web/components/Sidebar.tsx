@@ -22,6 +22,7 @@ export default function Sidebar() {
     { name: 'Attendance', href: '/attendance', icon: CalendarCheck },
     { name: 'Tasks', href: '/tasks', icon: ClipboardList }, // Optional: separate page for tasks oversight
     { name: 'Requests', href: '/materials', icon: PenTool }, // We mapped this to /materials in dashboard already
+    { name: 'Invoices', href: '/invoices', icon: FileText },
     { name: 'Reports', href: '/reports', icon: FileText },
     { name: 'Messages', href: '/messages', icon: MessageSquare }, // Added Messages
   ];

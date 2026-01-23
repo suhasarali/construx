@@ -1,10 +1,11 @@
 import express from 'express';
-import { createInvoice, getInvoices } from "../controllers/invoiceController.js";
-import { protect, authorize } from "../middleware/authMiddleware.js";
+import { getInvoices, getInvoiceStats, downloadInvoicePDF } from '../controllers/invoiceController.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', protect, authorize('Owner'), createInvoice);
-router.get('/', protect, authorize('Owner'), getInvoices);
+router.get('/', protect, getInvoices);
+router.get('/stats', protect, authorize('Manager', 'Owner'), getInvoiceStats);
+router.get('/:id/download', protect, downloadInvoicePDF);
 
 export default router;

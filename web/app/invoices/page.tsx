@@ -2,229 +2,131 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { FileText, Plus, Download, Trash2 } from 'lucide-react';
+import { Download, FileText, TrendingUp, DollarSign, Package } from 'lucide-react';
 
-export default function Invoices() {
-  interface Invoice {
-      _id: string;
-      invoiceNumber: string;
-      clientName: string;
-      createdAt: string;
-      totalAmount: number;
-      status: string;
-      pdfUrl: string;
-  }
+export default function InvoicesPage() {
+    const [invoices, setInvoices] = useState([]);
+    const [stats, setStats] = useState({ totalSpent: 0, totalTax: 0, count: 0 });
+    const [loading, setLoading] = useState(true);
 
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const router = useRouter();
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-  // Form State
-  const [clientName, setClientName] = useState('');
-  const [clientGSTIN, setClientGSTIN] = useState('');
-  const [items, setItems] = useState([{ description: '', quantity: 1, rate: 0 }]);
+    const fetchData = async () => {
+        try {
+            const [invRes, statsRes] = await Promise.all([
+                api.get('/invoices'),
+                api.get('/invoices/stats')
+            ]);
+            setInvoices(invRes.data);
+            setStats(statsRes.data);
+        } catch (error) {
+            console.error("Failed to fetch invoices", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  useEffect(() => {
-    fetchInvoices();
-  }, []);
+    const downloadInvoice = async (id: string, number: string) => {
+        try {
+            const response = await api.get(`/invoices/${id}/download`, {
+                responseType: 'blob', // Important for file handling
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${number}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+        } catch (error) {
+            console.error("Download failed", error);
+            alert("Failed to download PDF");
+        }
+    };
 
-  const fetchInvoices = async () => {
-    try {
-      const res = await api.get('/invoices');
-      setInvoices(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    return (
+        <div className="space-y-6">
+            <h1 className="text-2xl font-bold">Invoices & Financials</h1>
 
-  const addItem = () => {
-    setItems([...items, { description: '', quantity: 1, rate: 0 }]);
-  };
-
-  const removeItem = (index: number) => {
-    const newItems = [...items];
-    newItems.splice(index, 1);
-    setItems(newItems);
-  };
-
-  const updateItem = (index: number, field: string, value: any) => {
-    const newItems: any = [...items];
-    newItems[index][field] = value;
-    setItems(newItems);
-  };
-
-  const generateInvoice = async () => {
-    setLoading(true);
-    try {
-      await api.post('/invoices', { clientName, clientGSTIN, items });
-      setShowModal(false);
-      setClientName('');
-      setClientGSTIN('');
-      setItems([{ description: '', quantity: 1, rate: 0 }]);
-      fetchInvoices();
-    } catch (error) {
-        console.error(error);
-        alert('Failed to generate invoice');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const downloadInvoice = (url: string) => {
-    const downloadUrl = `http://localhost:5000/${url}`; 
-    window.open(downloadUrl, '_blank');
-  };
-
-  return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-            <h1 className="text-3xl font-bold tracking-tight">Invoices</h1>
-            <p className="text-muted-foreground mt-2">Manage and generate client invoices.</p>
-        </div>
-        <button 
-            onClick={() => setShowModal(true)}
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-md shadow hover:bg-blue-600 flex items-center gap-2"
-        >
-            <Plus size={18} />
-            Create Invoice
-        </button>
-      </div>
-
-      <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-                <thead className="bg-muted text-muted-foreground uppercase bg-slate-100">
-                    <tr>
-                        <th className="px-6 py-3">Invoice #</th>
-                        <th className="px-6 py-3">Client</th>
-                        <th className="px-6 py-3">Date</th>
-                        <th className="px-6 py-3">Amount</th>
-                        <th className="px-6 py-3">Status</th>
-                        <th className="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                    {invoices.length === 0 ? (
-                        <tr>
-                            <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
-                                No invoices found. Create one to get started.
-                            </td>
-                        </tr>
-                    ) : invoices.map((inv) => (
-                        <tr key={inv._id} className="bg-card hover:bg-slate-50 transition-colors">
-                            <td className="px-6 py-4 font-medium">{inv.invoiceNumber}</td>
-                            <td className="px-6 py-4">{inv.clientName}</td>
-                            <td className="px-6 py-4 text-muted-foreground">{new Date(inv.createdAt).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 font-bold">₹{inv.totalAmount.toFixed(2)}</td>
-                            <td className="px-6 py-4">
-                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                                    {inv.status}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4">
-                                <button 
-                                    onClick={() => downloadInvoice(inv.pdfUrl)} 
-                                    className="text-primary hover:underline flex items-center gap-1"
-                                >
-                                    <Download size={16} /> PDF
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-      </Card>
-
-      {/* Modern Modal Overlay */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <Card className="w-full max-w-2xl p-6 shadow-xl animate-in fade-in zoom-in duration-200">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-semibold">New Invoice</h2>
-                    <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">✕</button>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-slate-500 font-medium">Total Spending</h3>
+                        <DollarSign className="text-blue-500" size={20} />
+                    </div>
+                    <p className="text-2xl font-bold text-slate-800">₹{stats.totalSpent.toLocaleString()}</p>
                 </div>
                 
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Client Name</label>
-                            <input 
-                                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none" 
-                                placeholder="Enter Name"
-                                value={clientName}
-                                onChange={e => setClientName(e.target.value)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">GSTIN (Optional)</label>
-                             <input 
-                                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none" 
-                                placeholder="GST Number"
-                                value={clientGSTIN}
-                                onChange={e => setClientGSTIN(e.target.value)}
-                            />
-                        </div>
+                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-emerald-500">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-slate-500 font-medium">Tax Paid (GST)</h3>
+                        <TrendingUp className="text-emerald-500" size={20} />
                     </div>
-                    
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <label className="text-sm font-medium">Items</label>
-                        </div>
-                        <div className="max-h-60 overflow-y-auto space-y-2 pr-2">
-                            {items.map((item, idx) => (
-                                <div key={idx} className="flex gap-2 items-start">
-                                    <input 
-                                        className="flex-1 p-2 border rounded-md text-sm" 
-                                        placeholder="Description"
-                                        value={item.description}
-                                        onChange={e => updateItem(idx, 'description', e.target.value)}
-                                    />
-                                    <input 
-                                        type="number"
-                                        className="w-20 p-2 border rounded-md text-sm" 
-                                        placeholder="Qty"
-                                        value={item.quantity}
-                                        onChange={e => updateItem(idx, 'quantity', Number(e.target.value))}
-                                    />
-                                    <input 
-                                        type="number"
-                                        className="w-24 p-2 border rounded-md text-sm" 
-                                        placeholder="Rate"
-                                        value={item.rate}
-                                        onChange={e => updateItem(idx, 'rate', Number(e.target.value))}
-                                    />
-                                    {items.length > 1 && (
-                                        <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded">
-                                            <Trash2 size={16} />
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                        <button onClick={addItem} className="text-primary text-sm hover:underline flex items-center gap-1 mt-2">
-                            <Plus size={14} /> Add Another Item
-                        </button>
-                    </div>
-
-                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-                        <button onClick={() => setShowModal(false)} className="px-4 py-2 border rounded-md hover:bg-slate-50">Cancel</button>
-                        <button 
-                            onClick={generateInvoice} 
-                            disabled={loading} 
-                            className="px-4 py-2 bg-primary text-primary-foreground rounded-md shadow hover:bg-blue-600 disabled:opacity-50"
-                        >
-                            {loading ? 'Generating...' : 'Generate Invoice'}
-                        </button>
-                    </div>
+                    <p className="text-2xl font-bold text-slate-800">₹{stats.totalTax.toLocaleString()}</p>
                 </div>
-            </Card>
+
+                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-slate-500 font-medium">Total Invoices</h3>
+                        <FileText className="text-purple-500" size={20} />
+                    </div>
+                    <p className="text-2xl font-bold text-slate-800">{stats.count}</p>
+                </div>
+            </div>
+
+            {/* Invoices List */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="p-4 border-b bg-slate-50 flex items-center gap-2">
+                    <FileText size={18} className="text-slate-500"/>
+                    <h2 className="font-semibold text-slate-700">Recent Invoices</h2>
+                </div>
+                <table className="w-full text-left">
+                    <thead className="bg-slate-50 border-b">
+                        <tr>
+                            <th className="p-4 font-semibold text-slate-600">Invoice #</th>
+                            <th className="p-4 font-semibold text-slate-600">Date</th>
+                            <th className="p-4 font-semibold text-slate-600">Client / Requested By</th>
+                            <th className="p-4 font-semibold text-slate-600">Amount</th>
+                            <th className="p-4 font-semibold text-slate-600">Status</th>
+                            <th className="p-4 font-semibold text-slate-600 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                        {loading ? (
+                            <tr><td colSpan={6} className="p-8 text-center text-slate-500">Loading invoices...</td></tr>
+                        ) : invoices.length === 0 ? (
+                            <tr><td colSpan={6} className="p-8 text-center text-slate-500">No invoices found.</td></tr>
+                        ) : (
+                            invoices.map((inv: any) => (
+                                <tr key={inv._id} className="hover:bg-slate-50">
+                                    <td className="p-4 font-medium text-blue-600">{inv.invoiceNumber}</td>
+                                    <td className="p-4 text-sm text-slate-600">
+                                        {new Date(inv.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td className="p-4 text-sm text-slate-800">{inv.clientName}</td>
+                                    <td className="p-4 font-bold text-slate-800">₹{inv.totalAmount.toLocaleString()}</td>
+                                    <td className="p-4">
+                                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                                            {inv.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <button 
+                                            onClick={() => downloadInvoice(inv._id, inv.invoiceNumber)}
+                                            className="flex items-center gap-1 text-slate-600 hover:text-blue-600 ml-auto"
+                                        >
+                                            <Download size={16} /> <span className="text-sm">Download</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      )}
-    </div>
-  );
+    );
 }
