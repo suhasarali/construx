@@ -1,4 +1,4 @@
-import Request from '../models/Request';
+import Request from '../models/Request.js';
 
 // @desc    Create a request
 // @route   POST /api/requests

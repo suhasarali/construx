@@ -1,4 +1,4 @@
-import MaterialRequisition from '../models/MaterialRequisition';
+import MaterialRequisition from '../models/MaterialRequisition.js';
 
 // @desc    Create Requisition
 // @route   POST /api/material-requisitions

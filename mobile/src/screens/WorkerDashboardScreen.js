@@ -103,6 +103,12 @@ const WorkerDashboardScreen = () => {
                     <Text style={styles.gridLabel}>Issues</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Communication')}>
+                    <Ionicons name="chatbubbles-outline" size={32} color="#AF52DE" />
+                    <Text style={styles.gridValue}>Msg</Text>
+                    <Text style={styles.gridLabel}>Messages</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DailyWork')}>
                     <Ionicons name="cloud-upload-outline" size={32} color="#34C759" />
                     <Text style={styles.gridValue}>+</Text>

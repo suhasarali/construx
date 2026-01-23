@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+
 
 const CommunicationScreen = () => {
+    const navigation = useNavigation();
+    const { userInfo } = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
@@ -67,11 +72,20 @@ const CommunicationScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.topRow}>
+            <View style={styles.leftHeader}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+                    <Ionicons name="chevron-back" size={26} color="#007AFF" />
+                </TouchableOpacity>
                 <Text style={styles.screenTitle}>Messages</Text>
+            </View>
+
+            {userInfo?.role !== 'Worker' && (
                 <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
                     <Ionicons name="add" size={24} color="white" />
                 </TouchableOpacity>
-            </View>
+            )}
+        </View>
+
             
             <FlatList 
                 data={messages}
@@ -134,7 +148,16 @@ const styles = StyleSheet.create({
     modalBtns: { flexDirection: 'row', justifyContent: 'space-between' },
     cancelBtn: { padding: 15, alignItems: 'center', width: '48%' },
     sendBtn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 8, alignItems: 'center', width: '48%' },
-    btnText: { fontWeight: 'bold' }
+    btnText: { fontWeight: 'bold' },
+    leftHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+backBtn: {
+    marginRight: 10,
+    padding: 4,
+},
+
 });
 
 export default CommunicationScreen;

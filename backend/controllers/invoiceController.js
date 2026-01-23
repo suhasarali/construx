@@ -1,4 +1,4 @@
-import Invoice from '../models/Invoice';
+import Invoice from '../models/Invoice.js';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 

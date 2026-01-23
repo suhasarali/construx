@@ -1,7 +1,7 @@
 import express from 'express';
-import { checkIn, checkOut, getAttendance, getSiteAttendance, verifyAttendance } from "../controllers/attendanceController";
-import { protect, authorize } from "../middleware/authMiddleware";
-import upload from "../utils/upload";
+import { checkIn, checkOut, getAttendance, getSiteAttendance, verifyAttendance } from "../controllers/attendanceController.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
+import upload from "../utils/upload.js";
 
 const router = express.Router();
 

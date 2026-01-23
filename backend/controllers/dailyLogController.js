@@ -1,4 +1,4 @@
-import DailyLog from '../models/DailyLog';
+import DailyLog from '../models/DailyLog.js';
 
 // @desc    Create Log
 // @route   POST /api/daily-logs

@@ -1,4 +1,4 @@
-import Message from '../models/Message';
+import Message from '../models/Message.js';
 
 // @desc    Send Message
 // @route   POST /api/messages

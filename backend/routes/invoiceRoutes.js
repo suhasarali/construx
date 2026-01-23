@@ -1,6 +1,6 @@
 import express from 'express';
-import { createInvoice, getInvoices } from "../controllers/invoiceController";
-import { protect, authorize } from "../middleware/authMiddleware";
+import { createInvoice, getInvoices } from "../controllers/invoiceController.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

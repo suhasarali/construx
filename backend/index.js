@@ -1,7 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './config/db';
+import connectDB from './config/db.js';
+
+// import routes
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import attendanceRoutes from './routes/attendanceRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
+import requestRoutes from './routes/requestRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 
 dotenv.config();
 
@@ -16,13 +25,13 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/attendance', require('./routes/attendanceRoutes'));
-app.use('/api/tasks', require('./routes/taskRoutes'));
-app.use('/api/requests', require('./routes/requestRoutes'));
-app.use('/api/reports', require('./routes/reportRoutes'));
-app.use('/api/messages', require('./routes/messageRoutes'));
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Serve Uploads
 app.use('/uploads', express.static('uploads'));

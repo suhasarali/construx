@@ -1,4 +1,4 @@
-import Report from '../models/Report';
+import Report from '../models/Report.js';
 
 // @desc    Create DPR
 // @route   POST /api/reports

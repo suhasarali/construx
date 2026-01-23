@@ -1,7 +1,7 @@
 import express from 'express';
-import { createReport, getReports } from "../controllers/reportController";
-import { protect } from "../middleware/authMiddleware";
-import upload from "../utils/upload";
+import { createReport, getReports } from "../controllers/reportController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import upload from "../utils/upload.js";
 
 const router = express.Router();
 

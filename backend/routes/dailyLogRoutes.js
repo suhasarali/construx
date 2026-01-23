@@ -1,7 +1,7 @@
 import express from 'express';
-import { createLog, getLogs } from "../controllers/dailyLogController";
-import { protect } from "../middleware/authMiddleware";
-import upload from "../utils/upload";
+import { createLog, getLogs } from "../controllers/dailyLogController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import upload from "../utils/upload.js";
 
 const router = express.Router();
 

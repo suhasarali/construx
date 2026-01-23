@@ -14,4 +14,4 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
     return R * c;
 };
 
-module.exports = { getDistance };
+export { getDistance };

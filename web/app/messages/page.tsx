@@ -53,23 +53,38 @@ export default function MessagesPage() {
             {/* Broadcast Form */}
             <div className="bg-white p-6 rounded-lg shadow space-y-4">
                 <h2 className="text-lg font-semibold flex items-center gap-2"><Send size={20} /> Send Broadcast</h2>
-                <form onSubmit={handleSend} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input className="border p-2 rounded" placeholder="Title" value={title} onChange={e=>setTitle(e.target.value)} required />
-                         <select className="border p-2 rounded" value={priority} onChange={e=>setPriority(e.target.value)}>
-                            <option value="Normal">Normal</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
+                <form onSubmit={handleSend} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder=" e.g., Site Safety Alert" value={title} onChange={e=>setTitle(e.target.value)} required />
+                        </div>
+                         <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                            <select className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={priority} onChange={e=>setPriority(e.target.value)}>
+                                <option value="Normal">Normal</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
                     </div>
-                    <textarea className="border p-2 rounded w-full h-24" placeholder="Message content..." value={content} onChange={e=>setContent(e.target.value)} required />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Message Content</label>
+                        <textarea className="w-full border p-2 rounded h-32 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Type your broadcast message here..." value={content} onChange={e=>setContent(e.target.value)} required />
+                    </div>
                     
-                    <div className="flex justify-between items-center">
-                        <select className="border p-2 rounded" value={targetRole} onChange={e=>setTargetRole(e.target.value)}>
-                            <option value="All">All Roles</option>
-                            <option value="Worker">Workers Only</option>
-                            <option value="Site_Engineer">Engineers Only</option>
-                        </select>
-                        <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Send Message</button>
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div className="w-full md:w-auto">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Target Audience</label>
+                            <select className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={targetRole} onChange={e=>setTargetRole(e.target.value)}>
+                                <option value="All">All Staff (Broadcast)</option>
+                                <option value="Worker">Workers Only</option>
+                                <option value="Site_Engineer">Engineers Only</option>
+                            </select>
+                        </div>
+                        <button type="submit" className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold flex items-center justify-center gap-2">
+                            <Send size={18} />
+                            Send Broadcast
+                        </button>
                     </div>
                 </form>
             </div>

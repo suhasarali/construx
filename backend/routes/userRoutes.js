@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { protect, authorize } from '../middleware/authMiddleware.js';
+import User from '../models/User.js';
+
 const router = express.Router();
-const { getUsers } = require('../controllers/authController'); // Reusing auth controller logic for now
-const { protect, authorize } = require('../middleware/authMiddleware');
-const User = require('../models/User');
 
 // @desc    Get all workers
 // @route   GET /api/users/workers
@@ -16,4 +16,4 @@ router.get('/workers', protect, authorize('Manager', 'Site_Engineer', 'Owner'), 
     }
 });
 
-module.exports = router;
+export default router;

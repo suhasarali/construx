@@ -1,6 +1,6 @@
 import express from 'express';
-import { createRequest, getRequests, updateRequestStatus } from "../controllers/requestController";
-import { protect } from "../middleware/authMiddleware";
+import { createRequest, getRequests, updateRequestStatus } from "../controllers/requestController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

@@ -1,4 +1,4 @@
-import Task from '../models/Task';
+import Task from '../models/Task.js';
 
 // @desc    Create a new task
 // @route   POST /api/tasks
@@ -119,7 +119,7 @@ export const updateTask = async (req, res) => {
 // @desc    Claim an unassigned task
 // @route   PUT /api/tasks/:id/claim
 // @access  Worker
-exports.claimTask = async (req, res) => {
+export const claimTask = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
 

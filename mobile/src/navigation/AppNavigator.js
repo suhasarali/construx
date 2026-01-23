@@ -7,6 +7,7 @@ import LoginScreen from '../screens/LoginScreen';
 import WorkerStack from './WorkerStack';
 import EngineerStack from './EngineerStack';
 import DailyWorkScreen from '../screens/DailyWorkScreen';
+import CommunicationScreen from '../screens/CommunicationScreen';
 const HomeScreen = () => (
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <Text>Welcome Home</Text>
@@ -34,6 +35,7 @@ const AppNavigator = () => {
                         <>
                             <Stack.Screen name="WorkerHome" component={WorkerStack} />
                             <Stack.Screen name="DailyWork" component={DailyWorkScreen} />
+                            <Stack.Screen name="Communication" component={CommunicationScreen} />
                         </>
                     ) : (
                         <Stack.Screen name="EngineerHome" component={EngineerStack} />

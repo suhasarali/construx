@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { createRequisition, getRequisitions, updateRequisitionStatus } = require('../controllers/materialController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+import { createRequisition, getRequisitions, updateRequisitionStatus } from '../controllers/materialController.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
 
 router.post('/', protect, authorize('Engineer', 'Manager', 'Owner'), createRequisition);
 router.get('/', protect, getRequisitions);

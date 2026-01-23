@@ -1,5 +1,5 @@
-import Attendance from '../models/Attendance';
-import { getDistance } from '../utils/geoUtils';
+import Attendance from '../models/Attendance.js';
+import { getDistance } from '../utils/geoUtils.js';
 
 // Temporary hardcoded site checking
 const SITE_LOCATION = { lat: 12.9716, lng: 77.5946 }; // Example
