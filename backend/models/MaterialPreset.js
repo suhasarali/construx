@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const materialPresetSchema = new mongoose.Schema({
+const materialSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -18,6 +18,6 @@ const materialPresetSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const MaterialPreset = mongoose.model('MaterialPreset', materialPresetSchema);
+const Material = mongoose.model('Material', materialSchema);
 
-export default MaterialPreset;
+export default Material;

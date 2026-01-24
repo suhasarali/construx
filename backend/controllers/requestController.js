@@ -94,7 +94,7 @@ export const updateRequestStatus = async (req, res) => {
 export const createPaymentOrder = async (req, res) => {
     try {
         const { requestId } = req.body;
-        
+
         const request = await Request.findById(requestId);
         if (!request) return res.status(404).json({ message: 'Request not found' });
 
@@ -105,13 +105,13 @@ export const createPaymentOrder = async (req, res) => {
 
         // Fetch all presets for lookup
         const presets = await MaterialPreset.find({});
-        
+
         for (const item of request.items) {
             const preset = presets.find(p => p.name.toLowerCase() === item.name.toLowerCase());
-            
+
             let rate = 0;
             let gstRate = 0;
-            
+
             if (preset) {
                 rate = preset.basePrice;
                 gstRate = preset.gstRate;
@@ -124,10 +124,10 @@ export const createPaymentOrder = async (req, res) => {
 
             const amount = rate * item.quantity;
             const gstAmount = amount * (gstRate / 100);
-            
+
             totalBase += amount;
             totalTax += gstAmount;
-            
+
             lineItems.push({
                 description: item.name,
                 quantity: item.quantity,
@@ -145,7 +145,7 @@ export const createPaymentOrder = async (req, res) => {
         }
 
         console.log('Creating Razorpay order for amount:', totalAmount);
-        
+
         const options = {
             amount: totalAmount * 100, // paise
             currency: 'INR',
@@ -156,7 +156,7 @@ export const createPaymentOrder = async (req, res) => {
         };
 
         const order = await razorpay.orders.create(options);
-        
+
         // Return order AND breakdown for UI
         res.json({
             order,
@@ -195,7 +195,7 @@ export const verifyPaymentAndApprove = async (req, res) => {
             }
 
             const paymentDetails = await razorpay.payments.fetch(paymentId);
-            
+
             // Create Invoice
             // We rely on the breakdown passed from frontend (which came from backend earlier)
             // Or we re-calculate. Recalculate is safer but complex to duplicate logic. 
@@ -203,7 +203,7 @@ export const verifyPaymentAndApprove = async (req, res) => {
             // For simplicity, let's re-calculate to be safe or accept for now.
             // Actually, `createPaymentOrder` returned it. Frontend should send it back or we re-derive.
             // Let's re-derive briefly or just be robust.
-            
+
             // Create Invoice Record
             const invoice = await Invoice.create({
                 invoiceNumber: `INV-${Date.now()}`,
@@ -230,10 +230,10 @@ export const verifyPaymentAndApprove = async (req, res) => {
             await request.save();
             console.log('Payment verified, Invoice created:', invoice.invoiceNumber);
 
-            res.json({ 
-                message: 'Payment verified and Request Approved', 
-                request, 
-                invoiceId: invoice._id 
+            res.json({
+                message: 'Payment verified and Request Approved',
+                request,
+                invoiceId: invoice._id
             });
         } else {
             res.status(400).json({ message: 'Invalid payment signature' });

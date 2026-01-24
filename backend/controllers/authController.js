@@ -7,7 +7,7 @@ const generateToken = (id, role) => {
     });
 };
 
-// @desc    Get All Users (Admin/Manager)
+// @desc    Get All Users (Manager/Owner)
 // @route   GET /api/auth/users
 // @access  Manager, Owner
 export const getUsers = async (req, res) => {

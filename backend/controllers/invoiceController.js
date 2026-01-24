@@ -24,14 +24,14 @@ export const getInvoiceStats = async (req, res) => {
                 $group: {
                     _id: null,
                     totalSpent: { $sum: "$totalAmount" },
-                    totalTax: { 
-                        $sum: { 
+                    totalTax: {
+                        $sum: {
                             $add: [
-                                { $ifNull: ["$cgst", 0] }, 
-                                { $ifNull: ["$sgst", 0] }, 
+                                { $ifNull: ["$cgst", 0] },
+                                { $ifNull: ["$sgst", 0] },
                                 { $ifNull: ["$igst", 0] }
-                            ] 
-                        } 
+                            ]
+                        }
                     },
                     count: { $sum: 1 }
                 }
@@ -64,22 +64,22 @@ export const downloadInvoicePDF = async (req, res) => {
 
         // --- Header Section ---
         doc.fontSize(10).fillColor('#666666').text('YOUR LOGO', 50, 50); // MOCK LOGO
-        doc.text('NO. 000001', 450, 50, { align: 'right' }); 
+        doc.text('NO. 000001', 450, 50, { align: 'right' });
 
         doc.moveDown(2);
-        
+
         // "INVOICE" Title
         doc.font('Helvetica-Bold').fontSize(40).fillColor('#000000').text('INVOICE', 50, 100);
-        
+
         doc.fontSize(10).font('Helvetica-Bold').text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`, 50, 150);
 
         // Billed To / From
         const topInfoY = 180;
-        
+
         doc.font('Helvetica-Bold').text('Billed to:', 50, topInfoY);
         doc.font('Helvetica').text('Construx Construction Co.', 50, topInfoY + 15);
         doc.text('123 Main Street', 50, topInfoY + 30);
-        doc.text(`Attn: ${invoice.clientName}`, 50, topInfoY + 45); 
+        doc.text(`Attn: ${invoice.clientName}`, 50, topInfoY + 45);
 
         doc.font('Helvetica-Bold').text('From:', 350, topInfoY);
         doc.font('Helvetica').text('Firstbenchers Suppliers Ltd.', 350, topInfoY + 15);
@@ -88,10 +88,10 @@ export const downloadInvoicePDF = async (req, res) => {
 
         // --- Table Section ---
         const tableTop = 260;
-        
+
         // Table Header Background
         doc.rect(50, tableTop, 495, 25).fill('#e0e0e0');
-        
+
         // Table Header Text
         doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
         const itemX = 60;
@@ -111,12 +111,12 @@ export const downloadInvoicePDF = async (req, res) => {
         invoice.items.forEach(item => {
             const price = (item.rate || 0).toFixed(2);
             const amount = (item.amount || 0).toFixed(2);
-            
+
             doc.text(item.description, itemX, y);
             doc.text(item.quantity.toString(), qtyX, y);
-            doc.text(price, priceX, y); 
+            doc.text(price, priceX, y);
             doc.text(amount, amountX, y);
-            
+
             y += 25;
         });
 
@@ -128,12 +128,12 @@ export const downloadInvoicePDF = async (req, res) => {
         doc.font('Helvetica-Bold').fillColor('#000000');
         doc.text('Total', 400, y);
         doc.text(`INR ${(invoice.totalAmount || 0).toFixed(2)}`, 480, y);
-        
+
         // Footer Notes & Payment Method
         const footerY = y + 50;
         doc.font('Helvetica-Bold').text('Payment method:', 50, footerY);
         doc.font('Helvetica').text('Bank Transfer / UPI', 150, footerY);
-        
+
         doc.font('Helvetica-Bold').text('Note:', 50, footerY + 20);
         doc.font('Helvetica').text('Thank you for choosing us!', 150, footerY + 20);
 
@@ -142,12 +142,12 @@ export const downloadInvoicePDF = async (req, res) => {
         // Simple wave simulation
         doc.save();
         doc.path('M 0 750 C 150 700, 350 780, 600 720 L 600 850 L 0 850 Z')
-           .fill('#333333');
-        
+            .fill('#333333');
+
         doc.path('M 0 780 C 150 750, 400 820, 600 760 L 600 850 L 0 850 Z')
-           .fillOpacity(0.3)
-           .fill('#666666');
-           
+            .fillOpacity(0.3)
+            .fill('#666666');
+
         doc.restore();
 
         doc.end();

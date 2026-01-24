@@ -1,31 +1,44 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import cloudinary from '../config/cloudinary.js';
 
-// Ensure uploads directory exists
-const uploadDir = 'uploads/';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+// Custom Cloudinary Storage Engine
+const storage = {
+    _handleFile: (req, file, cb) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: 'construx_uploads',
+                resource_type: 'auto',
+            },
+            (error, result) => {
+                if (error) {
+                    return cb(error);
+                }
+                cb(null, {
+                    path: result.secure_url,
+                    filename: result.public_id,
+                    originalname: file.originalname,
+                    mimetype: result.format ? `${result.resource_type}/${result.format}` : file.mimetype,
+                    size: result.bytes,
+                });
+            }
+        );
+        file.stream.pipe(uploadStream);
     },
-    filename: function (req, file, cb) {
-        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
+};
 
 const checkFileType = (file, cb) => {
-    const filetypes = /jpg|jpeg|png/;
+    // Allowed file extensions
+    const filetypes = /jpg|jpeg|png|mp4|mkv|avi|mov/;
+    // Check extension
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+    // Check mime
+    const mimetype = /jpeg|jpg|png|mp4|mpeg|quicktime|video/.test(file.mimetype);
 
     if (extname && mimetype) {
         return cb(null, true);
     } else {
-        cb('Images only!');
+        cb('Images and Videos only!');
     }
 };
 

@@ -11,7 +11,7 @@ export const createTask = async (req, res) => {
             // "Everyone" - Create a task for each worker
             const User = require('../models/User');
             const workers = await User.find({ role: 'Worker' });
-            
+
             const tasks = await Promise.all(workers.map(worker => Task.create({
                 title,
                 description,
@@ -21,7 +21,7 @@ export const createTask = async (req, res) => {
                 siteLocation,
                 deadline
             })));
-            
+
             return res.status(201).json({ message: `Created ${tasks.length} tasks for all workers` });
         }
 
@@ -94,7 +94,7 @@ export const updateTask = async (req, res) => {
             // We should auto-assign if it's null and they are updating status?
             // Actually, let's keep it simple: if assignedTo matches OR if assignedTo is null.
             if (task.assignedTo && task.assignedTo.toString() !== req.user.id) {
-                 return res.status(401).json({ message: 'Not authorized' });
+                return res.status(401).json({ message: 'Not authorized' });
             }
         }
 
