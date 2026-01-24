@@ -1,7 +1,6 @@
 import MaterialPreset from './models/MaterialPreset.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path from 'path';
 
 // Load env vars
 dotenv.config();
@@ -174,17 +173,17 @@ const seedPresets = async () => {
     try {
         const uri = process.env.MONGO_URI;
         if (!uri) throw new Error('MONGO_URI is not defined in .env');
-        
+
         console.log('Connecting to MongoDB...');
         await mongoose.connect(uri);
         console.log('MongoDB Connected');
 
         console.log('Clearing existing presets...');
         await MaterialPreset.deleteMany({});
-        
+
         console.log('Seeding new presets...');
         await MaterialPreset.insertMany(presets);
-        
+
         console.log(`Successfully seeded ${presets.length} material presets.`);
 
         process.exit();
