@@ -4,8 +4,10 @@ import api from '../services/api';
 import { colors } from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useLanguage } from '../context/LanguageContext';
 
 const TaskListScreen = () => {
+    const { t } = useLanguage();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -40,18 +42,7 @@ const TaskListScreen = () => {
     const claimTask = async () => {
         if (!selectedTask) return;
         try {
-            // Update task to assign to current user and set status to In Progress
-            // Ideally we need an endpoint for this, but reusing updateTask for now
-            // But updateTask checks if user is assignedTo... wait.
-            // backend check: if (req.user.role === 'Worker' && task.assignedTo.toString() !== req.user.id)
-            // This will fail if assignedTo is null. accessing task.assignedTo.toString() on null will crash? 
-            // Or if it is null, it won't equal req.user.id.
-            
-            // I need to update backend taskController.js updateTask to allow claiming unassigned tasks.
-            // For now, let's assume I fixed it or I will fix it next.
-            
-            await api.put(`/tasks/${selectedTask._id}/claim`); // I should probably create a specific claim route or update updateTask logic
-            
+            await api.put(`/tasks/${selectedTask._id}/claim`);
             Alert.alert('Success', 'You have started this task');
             setSelectedTask(null);
             fetchTasks();
@@ -63,13 +54,7 @@ const TaskListScreen = () => {
 
     const completeTask = async () => {
         if (!selectedTask) return;
-        
         try {
-            // Ideally upload image first then send URL, but for simplicity we rely on backend handling multiparts if we changed the endpoint to support it. 
-            // BUT, our task update endpoint expects JSON URLs currently in the controller.
-            // Let's assume we implement a separate upload endpoint or simple JSON update for now.
-            // Since I didn't make a generic upload endpoint for tasks, I'll just mark as completed without photo validaiton for this MVP step or just send status.
-            
             await api.put(`/tasks/${selectedTask._id}`, {
                 status: 'Completed',
             });
@@ -92,13 +77,13 @@ const TaskListScreen = () => {
                 </View>
             </View>
             <Text style={styles.desc}>{item.description}</Text>
-            <Text style={styles.date}>Due: {new Date(item.deadline).toLocaleDateString()}</Text>
+            <Text style={styles.date}>{t('due')}: {new Date(item.deadline).toLocaleDateString()}</Text>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>My Tasks</Text>
+            <Text style={styles.header}>{t('myTasks')}</Text>
             <FlatList 
                 data={tasks}
                 renderItem={renderItem}
@@ -112,20 +97,20 @@ const TaskListScreen = () => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{selectedTask?.title}</Text>
                         <Text style={styles.modalDesc}>{selectedTask?.description}</Text>
-                        <Text style={styles.modalLabel}>Priority: <Text style={{fontWeight:'bold'}}>{selectedTask?.priority}</Text></Text>
+                        <Text style={styles.modalLabel}>{t('priority')}: <Text style={{fontWeight:'bold'}}>{selectedTask?.priority}</Text></Text>
                         
                         <View style={styles.modalBtns}>
                             <TouchableOpacity style={styles.cancelBtn} onPress={() => setSelectedTask(null)}>
-                                <Text style={styles.btnText}>Close</Text>
+                                <Text style={styles.btnText}>{t('close')}</Text>
                             </TouchableOpacity>
                             {selectedTask?.status !== 'Completed' && (
                                 !selectedTask?.assignedTo ? (
                                     <TouchableOpacity style={[styles.completeBtn, {backgroundColor: colors.info}]} onPress={claimTask}>
-                                        <Text style={[styles.btnText, {color: 'white'}]}>Start Task</Text>
+                                        <Text style={[styles.btnText, {color: 'white'}]}>{t('startTask')}</Text>
                                     </TouchableOpacity>
                                 ) : (
                                     <TouchableOpacity style={styles.completeBtn} onPress={completeTask}>
-                                        <Text style={styles.btnText}>Mark Done</Text>
+                                        <Text style={styles.btnText}>{t('markDone')}</Text>
                                     </TouchableOpacity>
                                 )
                             )}

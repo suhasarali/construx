@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity }
 import { colors } from '../constants/colors';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const IssuesListScreen = ({ navigation }) => {
+    const { t } = useLanguage();
     const [issues, setIssues] = useState([]);
     const [loading, setLoading] = useState(true);
-
-
 
     useFocusEffect(
         useCallback(() => {
@@ -48,7 +48,7 @@ const IssuesListScreen = ({ navigation }) => {
             </View>
             <Text style={styles.issueText}>{item.issuesRaised}</Text>
             <View style={styles.metaRow}>
-                <Text style={styles.meta}>Submitted By: {item.submittedBy?.name || 'Unknown'}</Text>
+                <Text style={styles.meta}>{t('submittedBy')}: {item.submittedBy?.name || 'Unknown'}</Text>
 
                 {/* Resolve Tick Option */}
                 <TouchableOpacity
@@ -56,7 +56,7 @@ const IssuesListScreen = ({ navigation }) => {
                     onPress={() => item.status !== 'Resolved' && resolveIssue(item._id)}
                 >
                     <Ionicons name="checkmark" size={16} color="white" />
-                    <Text style={styles.resolveText}>{item.status}</Text>
+                    <Text style={styles.resolveText}>{item.status === 'Resolved' ? item.status : t('resolve')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -73,7 +73,7 @@ const IssuesListScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.headerRow}>
-                <Text style={styles.title}>Reported Issues</Text>
+                <Text style={styles.title}>{t('reportedIssues')}</Text>
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={() => navigation.navigate('ReportIssue')}
@@ -85,7 +85,7 @@ const IssuesListScreen = ({ navigation }) => {
             {issues.length === 0 ? (
                 <View style={styles.center}>
                     <Ionicons name="checkmark-circle-outline" size={64} color={colors.success} />
-                    <Text style={styles.emptyText}>No Outstanding Issues</Text>
+                    <Text style={styles.emptyText}>{t('noOutstandingIssues')}</Text>
                 </View>
             ) : (
                 <FlatList

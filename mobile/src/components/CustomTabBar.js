@@ -3,7 +3,11 @@ import { View, StyleSheet, TouchableOpacity, Platform, Text } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 
+import { useLanguage } from '../context/LanguageContext';
+
 const CustomTabBar = ({ state, descriptors, navigation }) => {
+    const { t } = useLanguage();
+
     return (
         <View style={styles.container}>
             <View style={styles.blurView}>
@@ -17,12 +21,14 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
                             if (isHidden) return null;
                         }
 
-                        const label =
-                            options.tabBarLabel !== undefined
-                                ? options.tabBarLabel
-                                : options.title !== undefined
-                                    ? options.title
-                                    : route.name;
+                        // Label Translation Logic
+                        let label = options.tabBarLabel !== undefined ? options.tabBarLabel : route.name;
+                        if (route.name === 'Dashboard') label = t('nav_dashboard');
+                        else if (route.name === 'Team' || route.name === 'AttendanceManagement') label = t('nav_team');
+                        else if (route.name === 'Tasks' || route.name === 'TaskManagement' || route.name === 'TaskList') label = t('nav_tasks');
+                        else if (route.name === 'Attendance') label = t('nav_attendance');
+                        else if (route.name === 'Issues') label = t('nav_issues');
+                        else if (route.name === 'Profile') label = t('nav_profile');
 
                         const isFocused = state.index === index;
 

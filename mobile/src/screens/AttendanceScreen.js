@@ -14,6 +14,7 @@ import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 const logLocationInfo = (loc, source) => {
   const now = Date.now();
@@ -43,6 +44,7 @@ const logLocationInfo = (loc, source) => {
 
 
 const AttendanceScreen = () => {
+  const { t } = useLanguage();
   const [location, setLocation] = useState(null);
   const [status, setStatus] = useState('Loading...');
   const [loading, setLoading] = useState(false);
@@ -211,22 +213,31 @@ const AttendanceScreen = () => {
     };
   }, []);
 
+  const getStatusText = (status) => {
+    switch(status) {
+        case 'Checked In': return t('checkedIn');
+        case 'Checked Out': return t('checkedOut');
+        case 'Loading...': return t('fetching');
+        default: return t('notCheckedIn');
+    }
+  };
+
   /* -------------------- UI -------------------- */
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Attendance</Text>
+      <Text style={styles.header}>{t('attendance')}</Text>
 
       {!location && (
         <TouchableOpacity onPress={refreshLocation} style={styles.retry}>
           <Text style={styles.retryText}>
-            📍 Retry Location {loading ? '(Fetching...)' : ''}
+            📍 {t('retryLocation')} {loading ? `(${t('fetching')})` : ''}
           </Text>
         </TouchableOpacity>
       )}
 
       <View style={styles.statusCard}>
-        <Text style={styles.label}>Current Status</Text>
-        <Text style={styles.value}>{status}</Text>
+        <Text style={styles.label}>{t('currentStatus')}</Text>
+        <Text style={styles.value}>{getStatusText(status)}</Text>
       </View>
 
       <View style={styles.actionArea}>
@@ -237,7 +248,7 @@ const AttendanceScreen = () => {
               onPress={() => setPhoto(null)}
               style={styles.retakeBtn}
             >
-              <Text style={{ color: 'white' }}>Retake</Text>
+              <Text style={{ color: 'white' }}>{t('retake')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -247,7 +258,7 @@ const AttendanceScreen = () => {
             disabled={loading}
           >
             <Ionicons name="camera" size={40} color="white" />
-            <Text style={styles.cameraText}>Take Selfie</Text>
+            <Text style={styles.cameraText}>{t('takeSelfie')}</Text>
           </TouchableOpacity>
         )}
 
@@ -269,7 +280,7 @@ const AttendanceScreen = () => {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={styles.btnText}>Check In</Text>
+              <Text style={styles.btnText}>{t('checkIn')}</Text>
             )}
           </TouchableOpacity>
 
@@ -285,7 +296,7 @@ const AttendanceScreen = () => {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={styles.btnText}>Check Out</Text>
+              <Text style={styles.btnText}>{t('checkOut')}</Text>
             )}
           </TouchableOpacity>
         </View>

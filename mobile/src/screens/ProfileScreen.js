@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = () => {
     const { userInfo, logout } = useContext(AuthContext);
+    const { t } = useLanguage();
 
     return (
         <View style={styles.container}>
@@ -25,7 +27,7 @@ const ProfileScreen = () => {
             </View>
 
             <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
-                <Text style={styles.logoutText}>Logout</Text>
+                <Text style={styles.logoutText}>{t('logout')}</Text>
             </TouchableOpacity>
         </View>
     );
