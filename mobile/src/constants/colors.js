@@ -21,8 +21,8 @@ export const colors = {
   
   // Status
   success: '#30D158', // iOS Green
-  danger: '#FF453A', // iOS Red
-  warning: '#FF9F0A', // iOS Orange
+  danger: '#ff9f0aff', // iOS Red
+  warning: '#ff9f0aff', // iOS Orange
   info: '#0A84FF', // iOS Blue (keep for info)
   
   // Navigation
