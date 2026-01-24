@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { Camera, CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import FaceRecognitionService from '../services/FaceRecognitionService';
 import * as Location from 'expo-location';
+import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 
 const BiometricAttendanceScreen = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [isVerifying, setIsVerifying] = useState(false);
     const cameraRef = useRef(null);
     const [statusMessage, setStatusMessage] = useState('Align face to mark attendance');
+    const { userInfo } = useContext(AuthContext);
 
     if (!permission) return <View />;
     if (!permission.granted) {
@@ -46,13 +49,20 @@ const BiometricAttendanceScreen = ({ navigation }) => {
                 if (isMatch) {
                     setStatusMessage('Verified! Marking Attendance...');
 
-                    // 5. Call Backend or Store Offline
-                    // await axios.post('/api/face-auth/verify', { ... })
+                    // 5. Call Backend
+                    const response = await api.post('/face-auth/verify', {
+                        userId: userInfo.id,
+                        confidence: 0.95, // Mock confidence
+                        location: {
+                            lat: location.coords.latitude,
+                            lng: location.coords.longitude,
+                            address: 'Unknown' // Ideally reverse geocode here
+                        },
+                        deviceId: 'Mobile-App'
+                    });
 
-                    setTimeout(() => {
-                        Alert.alert('Success', 'Attendance Marked: Present');
-                        navigation.goBack();
-                    }, 1000);
+                    Alert.alert('Success', `Attendance Marked: ${response.data.type}`);
+                    navigation.goBack();
                 } else {
                     setStatusMessage('Face not recognized. Try again.');
                     Alert.alert('Failed', 'Face not recognized.');
@@ -61,6 +71,7 @@ const BiometricAttendanceScreen = ({ navigation }) => {
             } catch (error) {
                 console.error(error);
                 setStatusMessage('Error during verification');
+                Alert.alert('Error', 'Failed to mark attendance. Please try again.');
             } finally {
                 setIsVerifying(false);
             }

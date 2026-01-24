@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { Camera, CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import FaceRecognitionService from '../services/FaceRecognitionService';
-import axios from 'axios'; // Assuming axios is configured
-// import { useAuth } from '../context/AuthContext'; // Assuming AuthContext exists
+import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 
 const FaceEnrollmentScreen = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [isProcessing, setIsProcessing] = useState(false);
     const cameraRef = useRef(null);
-    // const { user } = useAuth(); // Get current user ID
+    const { userInfo } = useContext(AuthContext);
 
     if (!permission) {
         return <View />;
@@ -45,13 +45,10 @@ const FaceEnrollmentScreen = ({ navigation }) => {
                 const mockEmbedding = Array(128).fill(0).map(() => Math.random());
 
                 // 2. Send to Backend
-                // Replace with your actual API URL
-                const API_URL = 'http://192.168.1.5:5500/api/face-auth/register';
-
-                // const response = await axios.post(API_URL, {
-                //     userId: user.id,
-                //     embedding: mockEmbedding
-                // });
+                const response = await api.post('/face-auth/register', {
+                    userId: userInfo.id,
+                    embedding: mockEmbedding
+                });
 
                 Alert.alert('Success', 'Face enrolled successfully!');
                 navigation.goBack();
