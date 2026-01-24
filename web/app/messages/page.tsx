@@ -7,7 +7,7 @@ import { Send, MessageSquare, AlertTriangle } from 'lucide-react';
 export default function MessagesPage() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
     // New Message Form
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -48,40 +48,40 @@ export default function MessagesPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold">Communication Center</h1>
+            <h1 className="text-2xl font-bold text-foreground pr-20">Communication Center</h1>
 
             {/* Broadcast Form */}
-            <div className="bg-white p-6 rounded-lg shadow space-y-4">
-                <h2 className="text-lg font-semibold flex items-center gap-2"><Send size={20} /> Send Broadcast</h2>
+            <div className="bg-card p-6 rounded-lg shadow space-y-4 border border-border">
+                <h2 className="text-lg font-semibold flex items-center gap-2 text-foreground"><Send size={20} /> Send Broadcast</h2>
                 <form onSubmit={handleSend} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                            <input className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder=" e.g., Site Safety Alert" value={title} onChange={e=>setTitle(e.target.value)} required />
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">Title</label>
+                            <input className="w-full border border-input bg-background text-foreground p-2 rounded focus:ring-2 focus:ring-ring outline-none" placeholder=" e.g., Site Safety Alert" value={title} onChange={e => setTitle(e.target.value)} required />
                         </div>
-                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                            <select className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={priority} onChange={e=>setPriority(e.target.value)}>
+                        <div>
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">Priority</label>
+                            <select className="w-full border border-input bg-background text-foreground p-2 rounded focus:ring-2 focus:ring-ring outline-none" value={priority} onChange={e => setPriority(e.target.value)}>
                                 <option value="Normal">Normal</option>
                                 <option value="Urgent">Urgent</option>
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Message Content</label>
-                        <textarea className="w-full border p-2 rounded h-32 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Type your broadcast message here..." value={content} onChange={e=>setContent(e.target.value)} required />
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Message Content</label>
+                        <textarea className="w-full border border-input bg-background text-foreground p-2 rounded h-32 focus:ring-2 focus:ring-ring outline-none" placeholder="Type your broadcast message here..." value={content} onChange={e => setContent(e.target.value)} required />
                     </div>
-                    
+
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="w-full md:w-auto">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Target Audience</label>
-                            <select className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none" value={targetRole} onChange={e=>setTargetRole(e.target.value)}>
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">Target Audience</label>
+                            <select className="w-full border border-input bg-background text-foreground p-2 rounded focus:ring-2 focus:ring-ring outline-none" value={targetRole} onChange={e => setTargetRole(e.target.value)}>
                                 <option value="All">All Staff (Broadcast)</option>
                                 <option value="Worker">Workers Only</option>
                                 <option value="Site_Engineer">Engineers Only</option>
                             </select>
                         </div>
-                        <button type="submit" className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold flex items-center justify-center gap-2">
+                        <button type="submit" className="w-full md:w-auto bg-primary text-primary-foreground px-8 py-3 rounded-lg hover:bg-primary/90 transition font-semibold flex items-center justify-center gap-2">
                             <Send size={18} />
                             Send Broadcast
                         </button>
@@ -90,20 +90,20 @@ export default function MessagesPage() {
             </div>
 
             {/* Message History / Queries */}
-            <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><MessageSquare size={20} /> History & Queries</h2>
+            <div className="bg-card rounded-lg shadow overflow-hidden p-6 border border-border">
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-foreground"><MessageSquare size={20} /> History & Queries</h2>
                 <div className="space-y-4">
                     {messages.map((msg: any) => (
-                        <div key={msg._id} className={`p-4 rounded border ${msg.priority === 'Urgent' ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'}`}>
+                        <div key={msg._id} className={`p-4 rounded border ${msg.priority === 'Urgent' ? 'border-red-500/50 bg-red-500/10' : 'border-border bg-muted/50'}`}>
                             <div className="flex justify-between mb-2">
-                                <h3 className="font-bold text-slate-800">{msg.title}</h3>
+                                <h3 className="font-bold text-foreground">{msg.title}</h3>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs text-slate-500">{new Date(msg.createdAt).toLocaleString()}</span>
-                                    {msg.priority === 'Urgent' && <AlertTriangle size={16} className="text-red-500" />}
+                                    <span className="text-xs text-muted-foreground">{new Date(msg.createdAt).toLocaleString()}</span>
+                                    {msg.priority === 'Urgent' && <AlertTriangle size={16} className="text-destructive" />}
                                 </div>
                             </div>
-                            <p className="text-slate-700">{msg.content}</p>
-                            <div className="mt-2 text-xs text-slate-500">
+                            <p className="text-foreground">{msg.content}</p>
+                            <div className="mt-2 text-xs text-muted-foreground">
                                 Sent by: {msg.sender?.name || 'System'} | To: {msg.targetRoles?.join(', ')}
                             </div>
                         </div>

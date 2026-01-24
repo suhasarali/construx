@@ -25,34 +25,34 @@ export default function ReportsPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold">Daily Progress Reports</h1>
+            <h1 className="text-2xl font-bold text-foreground pr-20">Daily Progress Reports</h1>
 
             <div className="grid grid-cols-1 gap-6">
                 {reports.map((report: any) => (
-                    <div key={report._id} className="bg-white p-6 rounded-lg shadow border border-slate-200">
+                    <div key={report._id} className="bg-card p-6 rounded-lg shadow border border-border">
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h2 className="text-lg font-bold">{report.type || 'DPR'} - {new Date(report.date).toLocaleDateString()}</h2>
-                                <p className="text-slate-500">Submitted by: {report.submittedBy?.name}</p>
+                                <h2 className="text-lg font-bold text-foreground">{report.type || 'DPR'} - {new Date(report.date).toLocaleDateString()}</h2>
+                                <p className="text-muted-foreground">Submitted by: {report.submittedBy?.name}</p>
                             </div>
-                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                            <span className="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full text-xs font-medium">
                                 {report.status || 'Submitted'}
                             </span>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <h3 className="font-semibold text-slate-700">Work Summary</h3>
-                                <p className="text-slate-600 bg-slate-50 p-3 rounded">{report.workSummary}</p>
+                                <h3 className="font-semibold text-foreground">Work Summary</h3>
+                                <p className="text-muted-foreground bg-muted/50 p-3 rounded">{report.workSummary}</p>
                             </div>
-                            
+
                             {report.type !== 'WorkerLog' && (
                                 <div className="space-y-2">
-                                    <h3 className="font-semibold text-slate-700">Metrics</h3>
+                                    <h3 className="font-semibold text-foreground">Metrics</h3>
                                     <div className="flex gap-4">
-                                        <div className="bg-slate-50 p-3 rounded flex-1">
-                                            <span className="text-xs text-slate-500 block">Labor Count</span>
-                                            <span className="font-bold">{report.laborCount}</span>
+                                        <div className="bg-muted/50 p-3 rounded flex-1">
+                                            <span className="text-xs text-muted-foreground block">Labor Count</span>
+                                            <span className="font-bold text-foreground">{report.laborCount}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -61,21 +61,21 @@ export default function ReportsPage() {
 
                         {report.issuesRaised && (
                             <div className="mt-4">
-                                <h3 className="font-semibold text-red-600">Issues Raised</h3>
-                                <p className="text-red-500 bg-red-50 p-3 rounded mt-1">{report.issuesRaised}</p>
+                                <h3 className="font-semibold text-destructive">Issues Raised</h3>
+                                <p className="text-destructive bg-destructive/10 p-3 rounded mt-1">{report.issuesRaised}</p>
                             </div>
                         )}
-                        
+
                         {report.photos && report.photos.length > 0 && (
                             <div className="mt-4">
-                                <h3 className="font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
                                     <ImageIcon size={18} /> Photos
                                 </h3>
                                 <div className="flex gap-3 overflow-x-auto pb-2">
                                     {report.photos.map((photo: any, idx: number) => (
-                                        <div key={idx} className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden border">
-                                           {/* Use server URL for images if local */}
-                                           <img src={photo.url ? `http://localhost:5000/${photo.url.replace(/\\/g, '/')}` : ''} alt="Report" className="object-cover w-full h-full" />
+                                        <div key={idx} className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden border border-border">
+                                            {/* Use server URL for images if local */}
+                                            <img src={photo.url ? `http://localhost:5000/${photo.url.replace(/\\/g, '/')}` : ''} alt="Report" className="object-cover w-full h-full" />
                                         </div>
                                     ))}
                                 </div>

@@ -48,75 +48,75 @@ export default function InvoicesPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold">Invoices & Financials</h1>
+            <h1 className="text-2xl font-bold text-foreground pr-20">Invoices & Financials</h1>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+                <div className="bg-card p-6 rounded-lg shadow border-l-4 border-blue-500 border border-border">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-slate-500 font-medium">Total Spending</h3>
+                        <h3 className="text-muted-foreground font-medium">Total Spending</h3>
                         <DollarSign className="text-blue-500" size={20} />
                     </div>
-                    <p className="text-2xl font-bold text-slate-800">₹{stats.totalSpent.toLocaleString()}</p>
-                </div>
-                
-                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-emerald-500">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-slate-500 font-medium">Tax Paid (GST)</h3>
-                        <TrendingUp className="text-emerald-500" size={20} />
-                    </div>
-                    <p className="text-2xl font-bold text-slate-800">₹{stats.totalTax.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-foreground">₹{stats.totalSpent.toLocaleString()}</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+                <div className="bg-card p-6 rounded-lg shadow border-l-4 border-emerald-500 border border-border">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-slate-500 font-medium">Total Invoices</h3>
+                        <h3 className="text-muted-foreground font-medium">Tax Paid (GST)</h3>
+                        <TrendingUp className="text-emerald-500" size={20} />
+                    </div>
+                    <p className="text-2xl font-bold text-foreground">₹{stats.totalTax.toLocaleString()}</p>
+                </div>
+
+                <div className="bg-card p-6 rounded-lg shadow border-l-4 border-purple-500 border border-border">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-muted-foreground font-medium">Total Invoices</h3>
                         <FileText className="text-purple-500" size={20} />
                     </div>
-                    <p className="text-2xl font-bold text-slate-800">{stats.count}</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.count}</p>
                 </div>
             </div>
 
             {/* Invoices List */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="p-4 border-b bg-slate-50 flex items-center gap-2">
-                    <FileText size={18} className="text-slate-500"/>
-                    <h2 className="font-semibold text-slate-700">Recent Invoices</h2>
+            <div className="bg-card rounded-lg shadow overflow-hidden border border-border">
+                <div className="p-4 border-b border-border bg-muted/50 flex items-center gap-2">
+                    <FileText size={18} className="text-muted-foreground" />
+                    <h2 className="font-semibold text-foreground">Recent Invoices</h2>
                 </div>
                 <table className="w-full text-left">
-                    <thead className="bg-slate-50 border-b">
+                    <thead className="bg-muted/50 border-b border-border">
                         <tr>
-                            <th className="p-4 font-semibold text-slate-600">Invoice #</th>
-                            <th className="p-4 font-semibold text-slate-600">Date</th>
-                            <th className="p-4 font-semibold text-slate-600">Client / Requested By</th>
-                            <th className="p-4 font-semibold text-slate-600">Amount</th>
-                            <th className="p-4 font-semibold text-slate-600">Status</th>
-                            <th className="p-4 font-semibold text-slate-600 text-right">Actions</th>
+                            <th className="p-4 font-semibold text-muted-foreground">Invoice #</th>
+                            <th className="p-4 font-semibold text-muted-foreground">Date</th>
+                            <th className="p-4 font-semibold text-muted-foreground">Client / Requested By</th>
+                            <th className="p-4 font-semibold text-muted-foreground">Amount</th>
+                            <th className="p-4 font-semibold text-muted-foreground">Status</th>
+                            <th className="p-4 font-semibold text-muted-foreground text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y divide-border">
                         {loading ? (
-                            <tr><td colSpan={6} className="p-8 text-center text-slate-500">Loading invoices...</td></tr>
+                            <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">Loading invoices...</td></tr>
                         ) : invoices.length === 0 ? (
-                            <tr><td colSpan={6} className="p-8 text-center text-slate-500">No invoices found.</td></tr>
+                            <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No invoices found.</td></tr>
                         ) : (
                             invoices.map((inv: any) => (
-                                <tr key={inv._id} className="hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-blue-600">{inv.invoiceNumber}</td>
-                                    <td className="p-4 text-sm text-slate-600">
+                                <tr key={inv._id} className="hover:bg-muted/50">
+                                    <td className="p-4 font-medium text-primary">{inv.invoiceNumber}</td>
+                                    <td className="p-4 text-sm text-muted-foreground">
                                         {new Date(inv.createdAt).toLocaleDateString()}
                                     </td>
-                                    <td className="p-4 text-sm text-slate-800">{inv.clientName}</td>
-                                    <td className="p-4 font-bold text-slate-800">₹{inv.totalAmount.toLocaleString()}</td>
+                                    <td className="p-4 text-sm text-foreground">{inv.clientName}</td>
+                                    <td className="p-4 font-bold text-foreground">₹{inv.totalAmount.toLocaleString()}</td>
                                     <td className="p-4">
-                                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                                        <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded-full text-xs font-bold">
                                             {inv.status}
                                         </span>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button 
+                                        <button
                                             onClick={() => downloadInvoice(inv._id, inv.invoiceNumber)}
-                                            className="flex items-center gap-1 text-slate-600 hover:text-blue-600 ml-auto"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-primary ml-auto"
                                         >
                                             <Download size={16} /> <span className="text-sm">Download</span>
                                         </button>

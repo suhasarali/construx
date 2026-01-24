@@ -16,7 +16,7 @@ export default function Login() {
     try {
       const res = await api.post('/auth/login', { phone, password });
       const { token, role } = res.data;
-      
+
       if (role !== 'Owner' && role !== 'Manager') {
         setError('Unauthorized access. Owner/Manager only.');
         return;
@@ -31,26 +31,26 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center text-black">Construx Admin</h1>
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+    <div className="flex min-h-screen flex-col items-center justify-center p-24 bg-background">
+      <div className="bg-card p-8 rounded shadow-md w-full max-w-md border border-border">
+        <h1 className="text-2xl font-bold mb-6 text-center text-foreground">Construx Admin</h1>
+        {error && <p className="text-destructive mb-4 text-center">{error}</p>}
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <input
             type="text"
             placeholder="Phone Number"
-            className="p-2 border rounded text-black"
+            className="p-2 border border-input rounded bg-background text-foreground placeholder:text-muted-foreground"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
-            className="p-2 border rounded text-black"
+            className="p-2 border border-input rounded bg-background text-foreground placeholder:text-muted-foreground"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          <button type="submit" className="bg-primary text-primary-foreground p-2 rounded hover:bg-primary/90 font-medium">
             Login
           </button>
         </form>
