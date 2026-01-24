@@ -45,3 +45,22 @@ export const getReports = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+// @desc    Update Report Status
+// @route   PUT /api/reports/:id
+// @access  Manager, Site_Engineer
+export const updateReport = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const report = await Report.findById(req.params.id);
+
+        if (report) {
+            report.status = status || report.status;
+            const updatedReport = await report.save();
+            res.json(updatedReport);
+        } else {
+            res.status(404).json({ message: 'Report not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -6,6 +6,9 @@ import TaskManagementScreen from '../screens/TaskManagementScreen';
 import RequestScreen from '../screens/RequestScreen';
 import DPRScreen from '../screens/DPRScreen';
 import CommunicationScreen from '../screens/CommunicationScreen';
+import IssuesListScreen from '../screens/IssuesListScreen';
+import ReportIssueScreen from '../screens/ReportIssueScreen';
+import CustomTabBar from '../components/CustomTabBar'; // Import CustomTabBar
 
 import { colors } from '../constants/colors';
 
@@ -14,26 +17,28 @@ const Tab = createBottomTabNavigator();
 const EngineerStack = () => {
     return (
         <Tab.Navigator
-             screenOptions={({ route }) => ({
+            tabBar={props => <CustomTabBar {...props} />} // Use CustomTabBar
+            screenOptions={({ route }) => ({
                 headerStyle: { backgroundColor: colors.headerBackground },
                 headerTintColor: colors.headerTint,
                 tabBarActiveTintColor: colors.tabBarActive,
                 tabBarInactiveTintColor: colors.tabBarInactive,
+                // Keep tabBarIcon logic or ensure options.tabBarIcon is set so CustomTabBar logic triggers if it relies on it check
                 tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    if (route.name === 'Dashboard') iconName = focused ? 'home' : 'home-outline';
-                    else if (route.name === 'Team') iconName = focused ? 'people' : 'people-outline';
-                    else if (route.name === 'Tasks') iconName = focused ? 'clipboard' : 'clipboard-outline';
-                    return <Ionicons name={iconName} size={size} color={color} />;
+                    // Placeholder to satisfy CustomTabBar check
+                    return <Ionicons name="home" />;
                 },
+                headerShown: false // Often modern apps hide default header or make it transparent
             })}
         >
             <Tab.Screen name="Dashboard" component={EngineerDashboardScreen} />
-            <Tab.Screen name="AttendanceManagement" component={AttendanceManagementScreen} options={{ tabBarLabel: 'Team', tabBarIcon: ({color}) => <Ionicons name="people" size={24} color={color} /> }} />
-            <Tab.Screen name="TaskManagement" component={TaskManagementScreen} options={{ tabBarLabel: 'Tasks', tabBarIcon: ({color}) => <Ionicons name="clipboard" size={24} color={color} /> }} />
+            <Tab.Screen name="AttendanceManagement" component={AttendanceManagementScreen} options={{ tabBarLabel: 'Team' }} />
+            <Tab.Screen name="TaskManagement" component={TaskManagementScreen} options={{ tabBarLabel: 'Tasks' }} />
             <Tab.Screen name="Requests" component={RequestScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="DPR" component={DPRScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="Communication" component={CommunicationScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="Issues" component={IssuesListScreen} />
+            <Tab.Screen name="ReportIssue" component={ReportIssueScreen} options={{ tabBarButton: () => null }} />
         </Tab.Navigator>
     );
 };

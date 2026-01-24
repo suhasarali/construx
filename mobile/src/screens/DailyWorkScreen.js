@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 const DailyWorkScreen = () => {
     const navigation = useNavigation();
     const [workSummary, setWorkSummary] = useState('');
+    const [issues, setIssues] = useState(''); // New state for issues
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -32,6 +33,7 @@ const DailyWorkScreen = () => {
         setLoading(true);
         const formData = new FormData();
         formData.append('workSummary', workSummary);
+        formData.append('issuesRaised', issues); // Append issues
         formData.append('date', new Date().toISOString());
         formData.append('type', 'WorkerLog');
 
@@ -68,12 +70,23 @@ const DailyWorkScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.label}>What did you do today?</Text>
-                <TextInput 
-                    style={[styles.input, styles.textArea]} 
-                    multiline 
+                <TextInput
+                    style={[styles.input, styles.textArea]}
+                    multiline
                     placeholder="Describe your work..."
-                    value={workSummary} 
-                    onChangeText={setWorkSummary} 
+                    value={workSummary}
+                    onChangeText={setWorkSummary}
+                />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.label}>Issues / Obstacles</Text>
+                <TextInput
+                    style={[styles.input, styles.textArea]}
+                    multiline
+                    placeholder="Any blockers or issues?"
+                    value={issues}
+                    onChangeText={setIssues}
                 />
             </View>
 
@@ -89,8 +102,8 @@ const DailyWorkScreen = () => {
                 </ScrollView>
             </View>
 
-            <TouchableOpacity 
-                style={[styles.submitBtn, loading && styles.disabledBtn]} 
+            <TouchableOpacity
+                style={[styles.submitBtn, loading && styles.disabledBtn]}
                 onPress={submitDailyWork}
                 disabled={loading}
             >
@@ -105,7 +118,7 @@ const DailyWorkScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 24, paddingTop: 60, backgroundColor: colors.background, flexGrow: 1 },
+    container: { padding: 24, paddingTop: 60, paddingBottom: 120, backgroundColor: colors.background, flexGrow: 1 },
     header: { flexDirection: 'row', alignItems: 'center', marginBottom: 30 },
     backBtn: { marginRight: 15, padding: 8, backgroundColor: colors.surfaceHighlight, borderRadius: 12 },
     title: { fontSize: 28, fontWeight: '900', color: colors.text, letterSpacing: 1 },
@@ -115,27 +128,27 @@ const styles = StyleSheet.create({
     textArea: { height: 140, textAlignVertical: 'top' },
     photoRow: { flexDirection: 'row' },
     thumb: { width: 90, height: 90, borderRadius: 16, marginRight: 12, borderWidth: 1, borderColor: colors.border },
-    addPhoto: { 
-        width: 90, 
-        height: 90, 
-        borderRadius: 16, 
-        borderWidth: 2, 
-        borderColor: colors.primary, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+    addPhoto: {
+        width: 90,
+        height: 90,
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderStyle: 'dashed',
-        backgroundColor: colors.surfaceHighlight 
+        backgroundColor: colors.surfaceHighlight
     },
-    submitBtn: { 
-        backgroundColor: colors.primary, 
-        padding: 20, 
-        borderRadius: 20, 
-        alignItems: 'center', 
+    submitBtn: {
+        backgroundColor: colors.primary,
+        padding: 20,
+        borderRadius: 20,
+        alignItems: 'center',
         marginTop: 10,
-        shadowColor: colors.primary, 
-        shadowOpacity: 0.3, 
-        shadowRadius: 10, 
-        elevation: 5 
+        shadowColor: colors.primary,
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 5
     },
     disabledBtn: { backgroundColor: colors.surfaceHighlight, opacity: 0.5 },
     btnText: { color: colors.textInverted, fontWeight: 'bold', fontSize: 18, textTransform: 'uppercase' }

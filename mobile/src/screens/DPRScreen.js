@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const DPRScreen = () => {
     const [workSummary, setWorkSummary] = useState('');
-    const [laborCount, setLaborCount] = useState('');
+    // const [laborCount, setLaborCount] = useState(''); // Removed per request
     const [issues, setIssues] = useState('');
     const [remarks, setRemarks] = useState('');
     const [photos, setPhotos] = useState([]);
@@ -24,14 +24,14 @@ const DPRScreen = () => {
     };
 
     const submitDPR = async () => {
-        if (!workSummary || !laborCount) {
-            Alert.alert('Error', 'Work Summary and Labor Count are required');
+        if (!workSummary) {
+            Alert.alert('Error', 'Work Summary is required');
             return;
         }
 
         const formData = new FormData();
         formData.append('workSummary', workSummary);
-        formData.append('laborCount', laborCount);
+        formData.append('laborCount', 0); // Default to 0 as it's removed from UI
         formData.append('issuesRaised', issues);
         formData.append('remarks', remarks);
         formData.append('date', new Date().toISOString());
@@ -51,7 +51,8 @@ const DPRScreen = () => {
             Alert.alert('Success', 'DPR Submitted Successfully');
             // Reset form
             setWorkSummary('');
-            setLaborCount('');
+            setWorkSummary('');
+            // setLaborCount('');
             setIssues('');
             setRemarks('');
             setPhotos([]);
@@ -66,35 +67,28 @@ const DPRScreen = () => {
             <Text style={styles.title}>Daily Progress Report</Text>
 
             <View style={styles.section}>
-                <Text style={styles.label}>Labor Count</Text>
-                <TextInput 
-                    style={styles.input} 
-                    keyboardType="numeric" 
-                    placeholder="Number of workers"
-                    value={laborCount} 
-                    onChangeText={setLaborCount} 
-                />
+                {/* Labor Count Removed */}
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.label}>Work Summary</Text>
-                <TextInput 
-                    style={[styles.input, styles.textArea]} 
-                    multiline 
+                <TextInput
+                    style={[styles.input, styles.textArea]}
+                    multiline
                     placeholder="Describe work done today..."
-                    value={workSummary} 
-                    onChangeText={setWorkSummary} 
+                    value={workSummary}
+                    onChangeText={setWorkSummary}
                 />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.label}>Issues / Obstacles</Text>
-                <TextInput 
-                    style={[styles.input, styles.textArea]} 
-                    multiline 
+                <TextInput
+                    style={[styles.input, styles.textArea]}
+                    multiline
                     placeholder="Any blockers?"
-                    value={issues} 
-                    onChangeText={setIssues} 
+                    value={issues}
+                    onChangeText={setIssues}
                 />
             </View>
 
@@ -118,39 +112,39 @@ const DPRScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 24, paddingTop: 60, backgroundColor: colors.background, flexGrow: 1 },
+    container: { padding: 24, paddingTop: 60, paddingBottom: 100, backgroundColor: colors.background, flexGrow: 1 },
     title: { fontSize: 32, fontWeight: '900', marginBottom: 30, color: colors.text, letterSpacing: 1 },
     section: { marginBottom: 24 },
     label: { fontSize: 16, fontWeight: '700', marginBottom: 12, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 1 },
-    input: { 
-        borderWidth: 1, 
-        borderColor: colors.border, 
-        borderRadius: 16, 
-        padding: 16, 
-        fontSize: 16, 
+    input: {
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 16,
+        padding: 16,
+        fontSize: 16,
         backgroundColor: colors.inputBg,
         color: colors.text
     },
     textArea: { height: 120, textAlignVertical: 'top' },
     photoRow: { flexDirection: 'row' },
     thumb: { width: 90, height: 90, borderRadius: 16, marginRight: 12, borderWidth: 1, borderColor: colors.border },
-    addPhoto: { 
-        width: 90, 
-        height: 90, 
-        borderRadius: 16, 
-        borderWidth: 2, 
-        borderColor: colors.primary, 
-        justifyContent: 'center', 
+    addPhoto: {
+        width: 90,
+        height: 90,
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: colors.primary,
+        justifyContent: 'center',
         alignItems: 'center',
         borderStyle: 'dashed',
         backgroundColor: colors.surfaceHighlight
     },
-    submitBtn: { 
-        backgroundColor: colors.primary, 
-        padding: 20, 
-        borderRadius: 20, 
-        alignItems: 'center', 
-        marginTop: 20, 
+    submitBtn: {
+        backgroundColor: colors.primary,
+        padding: 20,
+        borderRadius: 20,
+        alignItems: 'center',
+        marginTop: 20,
         marginBottom: 40,
         shadowColor: colors.primary,
         shadowOpacity: 0.3,

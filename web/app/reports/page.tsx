@@ -75,7 +75,7 @@ export default function ReportsPage() {
                                     {report.photos.map((photo: any, idx: number) => (
                                         <div key={idx} className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden border border-border">
                                             {/* Use server URL for images if local */}
-                                            <img src={photo.url ? `http://localhost:5000/${photo.url.replace(/\\/g, '/')}` : ''} alt="Report" className="object-cover w-full h-full" />
+                                            <img src={photo.url ? `http://localhost:5500/${photo.url.replace(/\\/g, '/')}` : ''} alt="Report" className="object-cover w-full h-full" />
                                         </div>
                                     ))}
                                 </div>
