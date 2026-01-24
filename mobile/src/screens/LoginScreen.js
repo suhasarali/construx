@@ -12,11 +12,11 @@ const LoginScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.iconContainer}>
-                 <Ionicons name="construct" size={64} color={colors.primary} />
+                <Ionicons name="construct" size={64} color={colors.primary} />
             </View>
             <Text style={styles.title}>CONSTRUX</Text>
             <Text style={styles.subtitle}>Field Management</Text>
-            
+
             {error && <Text style={styles.error}>{error}</Text>}
 
             <View style={styles.inputContainer}>
@@ -24,7 +24,7 @@ const LoginScreen = () => {
                 <TextInput
                     style={styles.input}
                     placeholder="Phone Number"
-                    placeholderTextColor={colors.textSecondary}
+                    placeholderTextColor="#ccc"
                     value={phone}
                     onChangeText={setPhone}
                     keyboardType="phone-pad"
@@ -36,7 +36,7 @@ const LoginScreen = () => {
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
-                    placeholderTextColor={colors.textSecondary}
+                    placeholderTextColor="#ccc"
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry

@@ -59,6 +59,7 @@ const ReportIssueScreen = () => {
                     style={[styles.input, styles.textArea]}
                     multiline
                     placeholder="What is blocking your work?"
+                    placeholderTextColor="#ccc"
                     value={issue}
                     onChangeText={setIssue}
                     autoFocus

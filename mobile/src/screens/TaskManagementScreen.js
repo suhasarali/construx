@@ -8,14 +8,14 @@ const TaskManagementScreen = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     // New Task Form
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedTo, setAssignedTo] = useState(''); // User ID or 'Anyone' or 'Everyone'
     const [deadline, setDeadline] = useState('');
     const [priority, setPriority] = useState('Medium');
-    const [workers, setWorkers] = useState([]); 
+    const [workers, setWorkers] = useState([]);
 
     useEffect(() => {
         fetchTasks();
@@ -36,7 +36,7 @@ const TaskManagementScreen = () => {
     const fetchWorkers = async () => {
         try {
             const res = await api.get('/users/workers');
-            setWorkers(res.data); 
+            setWorkers(res.data);
         } catch (e) { console.error(e) }
     };
 
@@ -51,13 +51,13 @@ const TaskManagementScreen = () => {
             description,
             deadline: deadline || new Date(Date.now() + 86400000).toISOString(),
             priority,
-            siteLocation: { lat: 0, lng: 0, address: 'Site A' } 
+            siteLocation: { lat: 0, lng: 0, address: 'Site A' }
         };
 
         if (assignedTo === 'Everyone') {
             payload.assignToAll = true;
         } else if (assignedTo === 'Anyone') {
-            payload.assignedTo = null; 
+            payload.assignedTo = null;
         } else {
             payload.assignedTo = assignedTo;
         }
@@ -100,7 +100,7 @@ const TaskManagementScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            <FlatList 
+            <FlatList
                 data={tasks}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
@@ -112,32 +112,32 @@ const TaskManagementScreen = () => {
                 <View style={styles.modalBg}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalHeader}>Create New Task</Text>
-                        
-                        <ScrollView style={{maxHeight: 400}}>
-                            <TextInput style={styles.input} placeholder="Task Title" value={title} onChangeText={setTitle} />
-                            <TextInput style={[styles.input, styles.textArea]} placeholder="Description" multiline value={description} onChangeText={setDescription} />
-                            
+
+                        <ScrollView style={{ maxHeight: 400 }}>
+                            <TextInput style={styles.input} placeholder="Task Title" placeholderTextColor="#ccc" value={title} onChangeText={setTitle} />
+                            <TextInput style={[styles.input, styles.textArea]} placeholder="Description" placeholderTextColor="#ccc" multiline value={description} onChangeText={setDescription} />
+
                             <Text style={styles.label}>Assign To:</Text>
                             <View style={styles.assignRow}>
-                                <TouchableOpacity 
-                                    style={[styles.assignBtn, assignedTo === 'Anyone' && styles.activeAssign]} 
+                                <TouchableOpacity
+                                    style={[styles.assignBtn, assignedTo === 'Anyone' && styles.activeAssign]}
                                     onPress={() => setAssignedTo('Anyone')}
                                 >
                                     <Text style={assignedTo === 'Anyone' ? styles.activeText : styles.text}>Anyone</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity 
-                                    style={[styles.assignBtn, assignedTo === 'Everyone' && styles.activeAssign]} 
+                                <TouchableOpacity
+                                    style={[styles.assignBtn, assignedTo === 'Everyone' && styles.activeAssign]}
                                     onPress={() => setAssignedTo('Everyone')}
                                 >
                                     <Text style={assignedTo === 'Everyone' ? styles.activeText : styles.text}>Everyone</Text>
                                 </TouchableOpacity>
                             </View>
-                            
+
                             <Text style={styles.label}>Or Pick Worker:</Text>
                             <View style={styles.workerList}>
                                 {workers.map(worker => (
-                                    <TouchableOpacity 
-                                        key={worker._id} 
+                                    <TouchableOpacity
+                                        key={worker._id}
                                         style={[styles.workerChip, assignedTo === worker._id && styles.activeWorker]}
                                         onPress={() => setAssignedTo(worker._id)}
                                     >
@@ -147,15 +147,15 @@ const TaskManagementScreen = () => {
                             </View>
 
                             <View style={styles.row}>
-                                 <TouchableOpacity style={[styles.prioBtn, priority==='High' && styles.activePrio]} onPress={() => setPriority('High')}>
-                                    <Text style={priority==='High' ? styles.activeText : styles.text}>High</Text>
-                                 </TouchableOpacity>
-                                 <TouchableOpacity style={[styles.prioBtn, priority==='Medium' && styles.activePrio]} onPress={() => setPriority('Medium')}>
-                                    <Text style={priority==='Medium' ? styles.activeText : styles.text}>Medium</Text>
-                                 </TouchableOpacity>
-                                 <TouchableOpacity style={[styles.prioBtn, priority==='Low' && styles.activePrio]} onPress={() => setPriority('Low')}>
-                                    <Text style={priority==='Low' ? styles.activeText : styles.text}>Low</Text>
-                                 </TouchableOpacity>
+                                <TouchableOpacity style={[styles.prioBtn, priority === 'High' && styles.activePrio]} onPress={() => setPriority('High')}>
+                                    <Text style={priority === 'High' ? styles.activeText : styles.text}>High</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.prioBtn, priority === 'Medium' && styles.activePrio]} onPress={() => setPriority('Medium')}>
+                                    <Text style={priority === 'Medium' ? styles.activeText : styles.text}>Medium</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.prioBtn, priority === 'Low' && styles.activePrio]} onPress={() => setPriority('Low')}>
+                                    <Text style={priority === 'Low' ? styles.activeText : styles.text}>Low</Text>
+                                </TouchableOpacity>
                             </View>
                         </ScrollView>
 
@@ -164,7 +164,7 @@ const TaskManagementScreen = () => {
                                 <Text style={styles.btnText}>Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.saveBtn} onPress={createTask}>
-                                <Text style={[styles.btnText, {color:'white'}]}>Create Task</Text>
+                                <Text style={[styles.btnText, { color: 'white' }]}>Create Task</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -179,10 +179,10 @@ const styles = StyleSheet.create({
     topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
     screenTitle: { fontSize: 32, fontWeight: '900', color: colors.text, letterSpacing: 1 },
     addBtn: { backgroundColor: colors.primary, padding: 12, borderRadius: 30, shadowColor: colors.primary, shadowOpacity: 0.4, shadowRadius: 8, elevation: 5 },
-    card: { 
-        backgroundColor: colors.surface, 
-        padding: 20, 
-        borderRadius: 24, 
+    card: {
+        backgroundColor: colors.surface,
+        padding: 20,
+        borderRadius: 24,
         marginBottom: 16,
         borderWidth: 1,
         borderColor: colors.border
@@ -196,14 +196,14 @@ const styles = StyleSheet.create({
     modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
     modalContent: { backgroundColor: colors.surface, padding: 24, borderRadius: 30, maxHeight: '80%', borderWidth: 1, borderColor: colors.border },
     modalHeader: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: colors.text },
-    input: { 
-        borderWidth: 1, 
-        borderColor: colors.border, 
-        borderRadius: 16, 
-        padding: 16, 
-        marginBottom: 16, 
+    input: {
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
         color: colors.text,
-        backgroundColor: colors.inputBg 
+        backgroundColor: colors.inputBg
     },
     textArea: { height: 100, textAlignVertical: 'top' },
     row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },

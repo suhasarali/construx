@@ -74,6 +74,7 @@ const DailyWorkScreen = () => {
                     style={[styles.input, styles.textArea]}
                     multiline
                     placeholder="Describe your work..."
+                    placeholderTextColor="#ccc"
                     value={workSummary}
                     onChangeText={setWorkSummary}
                 />
@@ -85,6 +86,7 @@ const DailyWorkScreen = () => {
                     style={[styles.input, styles.textArea]}
                     multiline
                     placeholder="Any blockers or issues?"
+                    placeholderTextColor="#ccc"
                     value={issues}
                     onChangeText={setIssues}
                 />

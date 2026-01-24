@@ -8,7 +8,7 @@ const RequestScreen = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     // Form
     const [cart, setCart] = useState([]);
     const [itemName, setItemName] = useState('');
@@ -73,7 +73,7 @@ const RequestScreen = () => {
                 items: cart,
                 urgency,
                 siteLocation: { lat: 0, lng: 0, address: 'Site A' },
-                type: 'Material' 
+                type: 'Material'
             });
             Alert.alert('Success', 'Request Sent');
             setModalVisible(false);
@@ -95,14 +95,14 @@ const RequestScreen = () => {
         <View style={styles.card}>
             <View style={styles.header}>
                 <Text style={styles.cardTitle}>{item.type} Request</Text>
-                <Text style={[styles.status, {color: item.status === 'Approved' ? colors.success : colors.warning}]}>{item.status}</Text>
+                <Text style={[styles.status, { color: item.status === 'Approved' ? colors.success : colors.warning }]}>{item.status}</Text>
             </View>
             {item.items.map((i, index) => (
                 <Text key={index} style={styles.itemText}>• {i.name}: {i.quantity} {i.unit}</Text>
             ))}
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 5}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                 <Text style={styles.meta}>Urgency: {item.urgency}</Text>
-                {item.payment?.status === 'Paid' && <Text style={{color: 'green', fontWeight: 'bold'}}>Paid</Text>}
+                {item.payment?.status === 'Paid' && <Text style={{ color: 'green', fontWeight: 'bold' }}>Paid</Text>}
             </View>
             <Text style={styles.meta}>Date: {new Date(item.createdAt).toLocaleDateString()}</Text>
         </View>
@@ -110,14 +110,14 @@ const RequestScreen = () => {
 
     return (
         <View style={styles.container}>
-             <View style={styles.topRow}>
+            <View style={styles.topRow}>
                 <Text style={styles.screenTitle}>Material Requests</Text>
                 <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
                     <Ionicons name="add" size={24} color="white" />
                 </TouchableOpacity>
             </View>
 
-            <FlatList 
+            <FlatList
                 data={requests}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
@@ -126,21 +126,21 @@ const RequestScreen = () => {
             />
 
             <Modal visible={modalVisible} animationType="slide" transparent>
-                 <View style={styles.modalBg}>
+                <View style={styles.modalBg}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalHeader}>New Request</Text>
-                        
+
                         <Text style={styles.label}>Select Material:</Text>
                         <TouchableOpacity style={styles.input} onPress={() => setShowPresets(!showPresets)}>
-                            <Text style={{color: itemName ? 'black' : '#999'}}>{itemName || "Select Material..."}</Text>
+                            <Text style={{ color: itemName ? colors.text : '#999' }}>{itemName || "Select Material..."}</Text>
                         </TouchableOpacity>
 
                         {showPresets && (
                             <View style={styles.presetList}>
-                                <ScrollView nestedScrollEnabled style={{maxHeight: 150}}>
+                                <ScrollView nestedScrollEnabled style={{ maxHeight: 150 }}>
                                     {presets.map((p) => (
                                         <TouchableOpacity key={p._id} style={styles.presetItem} onPress={() => selectPreset(p)}>
-                                            <Text>{p.name} ({p.unit})</Text>
+                                            <Text style={{ color: colors.text }}>{p.name} ({p.unit})</Text>
                                         </TouchableOpacity>
                                     ))}
                                 </ScrollView>
@@ -149,9 +149,9 @@ const RequestScreen = () => {
 
                         {!showPresets && (
                             <>
-                                <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                     <TextInput style={[styles.input, {width:'48%'}]} placeholder="Qty" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
-                                     <TextInput style={[styles.input, {width:'48%', backgroundColor: '#f0f0f0'}]} placeholder="Unit" value={unit} editable={false} />
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <TextInput style={[styles.input, { width: '48%', color: colors.text }]} placeholder="Qty" placeholderTextColor="#ccc" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
+                                    <TextInput style={[styles.input, { width: '48%', backgroundColor: '#f0f0f0', color: 'black' }]} placeholder="Unit" placeholderTextColor="gray" value={unit} editable={false} />
                                 </View>
 
                                 <TouchableOpacity style={styles.addItemBtn} onPress={addItemToCart}>
@@ -161,10 +161,10 @@ const RequestScreen = () => {
                                 {cart.length > 0 && (
                                     <View style={styles.cartContainer}>
                                         <Text style={styles.label}>Items in Request:</Text>
-                                        <ScrollView style={{maxHeight: 100}}>
+                                        <ScrollView style={{ maxHeight: 100 }}>
                                             {cart.map((item, index) => (
                                                 <View key={index} style={styles.cartItem}>
-                                                    <Text style={{flex: 1}}>{item.name} ({item.quantity} {item.unit})</Text>
+                                                    <Text style={{ flex: 1, color: colors.text }}>{item.name} ({item.quantity} {item.unit})</Text>
                                                     <TouchableOpacity onPress={() => removeFromCart(index)}>
                                                         <Ionicons name="trash" size={18} color="red" />
                                                     </TouchableOpacity>
@@ -173,15 +173,15 @@ const RequestScreen = () => {
                                         </ScrollView>
                                     </View>
                                 )}
-                                
+
                                 <Text style={styles.label}>Urgency:</Text>
                                 <View style={styles.row}>
-                                     <TouchableOpacity style={[styles.prioBtn, urgency==='High' && styles.activePrio]} onPress={() => setUrgency('High')}>
-                                        <Text style={urgency==='High' ? styles.activeText : styles.text}>High</Text>
-                                     </TouchableOpacity>
-                                     <TouchableOpacity style={[styles.prioBtn, urgency==='Medium' && styles.activePrio]} onPress={() => setUrgency('Medium')}>
-                                        <Text style={urgency==='Medium' ? styles.activeText : styles.text}>Medium</Text>
-                                     </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.prioBtn, urgency === 'High' && styles.activePrio]} onPress={() => setUrgency('High')}>
+                                        <Text style={urgency === 'High' ? styles.activeText : styles.text}>High</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.prioBtn, urgency === 'Medium' && styles.activePrio]} onPress={() => setUrgency('Medium')}>
+                                        <Text style={urgency === 'Medium' ? styles.activeText : styles.text}>Medium</Text>
+                                    </TouchableOpacity>
                                 </View>
 
                                 <View style={styles.modalBtns}>
@@ -189,15 +189,15 @@ const RequestScreen = () => {
                                         <Text style={styles.btnText}>Cancel</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.saveBtn} onPress={submitRequest}>
-                                        <Text style={[styles.btnText, {color:'white'}]}>Submit Request ({cart.length})</Text>
+                                        <Text style={[styles.btnText, { color: 'white' }]}>Submit Request</Text>
                                     </TouchableOpacity>
                                 </View>
                             </>
                         )}
                         {showPresets && (
-                             <TouchableOpacity style={[styles.cancelBtn, {width: '100%', marginTop: 10}]} onPress={() => setShowPresets(false)}>
+                            <TouchableOpacity style={[styles.cancelBtn, { width: '100%', marginTop: 10 }]} onPress={() => setShowPresets(false)}>
                                 <Text style={styles.btnText}>Close List</Text>
-                             </TouchableOpacity>
+                            </TouchableOpacity>
                         )}
                     </View>
                 </View>
@@ -211,10 +211,10 @@ const styles = StyleSheet.create({
     topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
     screenTitle: { fontSize: 32, fontWeight: '900', color: colors.text, letterSpacing: 1 },
     addBtn: { backgroundColor: colors.primary, padding: 12, borderRadius: 30, shadowColor: colors.primary, shadowOpacity: 0.4, shadowRadius: 8, elevation: 5 },
-    card: { 
-        backgroundColor: colors.surface, 
-        padding: 20, 
-        borderRadius: 24, 
+    card: {
+        backgroundColor: colors.surface,
+        padding: 20,
+        borderRadius: 24,
         marginBottom: 16,
         borderWidth: 1,
         borderColor: colors.border
@@ -227,12 +227,12 @@ const styles = StyleSheet.create({
     modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
     modalContent: { backgroundColor: colors.surface, padding: 24, borderRadius: 30, borderWidth: 1, borderColor: colors.border },
     modalHeader: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: colors.text },
-    input: { 
-        borderWidth: 1, 
-        borderColor: colors.border, 
-        borderRadius: 16, 
-        padding: 16, 
-        marginBottom: 16, 
+    input: {
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
         backgroundColor: colors.inputBg,
         color: colors.text
     },

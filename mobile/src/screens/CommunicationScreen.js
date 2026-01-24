@@ -58,10 +58,10 @@ const CommunicationScreen = () => {
     const renderItem = ({ item }) => (
         <View style={[styles.card, item.type === 'Query' && styles.queryCard]}>
             <View style={styles.header}>
-                <Ionicons 
-                    name={item.type === 'Query' ? "help-circle" : (item.priority === 'Urgent' ? "alert-circle" : "information-circle")} 
-                    size={24} 
-                    color={item.type === 'Query' ? colors.primary : (item.priority === 'Urgent' ? colors.danger : colors.info)} 
+                <Ionicons
+                    name={item.type === 'Query' ? "help-circle" : (item.priority === 'Urgent' ? "alert-circle" : "information-circle")}
+                    size={24}
+                    color={item.type === 'Query' ? colors.primary : (item.priority === 'Urgent' ? colors.danger : colors.info)}
                 />
                 <Text style={styles.title}>{item.title} {item.type === 'Query' && '(My Query)'}</Text>
             </View>
@@ -73,22 +73,22 @@ const CommunicationScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.topRow}>
-            <View style={styles.leftHeader}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                    <Ionicons name="chevron-back" size={26} color={colors.text} />
-                </TouchableOpacity>
-                <Text style={styles.screenTitle}>Messages</Text>
+                <View style={styles.leftHeader}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+                        <Ionicons name="chevron-back" size={26} color={colors.text} />
+                    </TouchableOpacity>
+                    <Text style={styles.screenTitle}>Messages</Text>
+                </View>
+
+                {userInfo?.role !== 'Worker' && (
+                    <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
+                        <Ionicons name="add" size={24} color="white" />
+                    </TouchableOpacity>
+                )}
             </View>
 
-            {userInfo?.role !== 'Worker' && (
-                <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
-                    <Ionicons name="add" size={24} color="white" />
-                </TouchableOpacity>
-            )}
-        </View>
 
-            
-            <FlatList 
+            <FlatList
                 data={messages}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
@@ -101,16 +101,18 @@ const CommunicationScreen = () => {
                 <View style={styles.modalBg}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalHeader}>Raise a Query</Text>
-                        <TextInput 
-                            style={styles.input} 
-                            placeholder="Title / Subject" 
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Title / Subject"
+                            placeholderTextColor="#ccc"
                             value={queryTitle}
                             onChangeText={setQueryTitle}
                         />
-                        <TextInput 
-                            style={[styles.input, styles.textArea]} 
-                            placeholder="Describe your issue..." 
-                            multiline 
+                        <TextInput
+                            style={[styles.input, styles.textArea]}
+                            placeholder="Describe your issue..."
+                            placeholderTextColor="#ccc"
+                            multiline
                             value={queryContent}
                             onChangeText={setQueryContent}
                         />
@@ -119,7 +121,7 @@ const CommunicationScreen = () => {
                                 <Text style={styles.btnText}>Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.sendBtn} onPress={sendQuery}>
-                                <Text style={[styles.btnText, {color:'white'}]}>Send</Text>
+                                <Text style={[styles.btnText, { color: 'white' }]}>Send</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -134,11 +136,11 @@ const styles = StyleSheet.create({
     topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
     screenTitle: { fontSize: 32, fontWeight: '900', marginLeft: 16, color: colors.text, letterSpacing: 1 },
     addBtn: { backgroundColor: colors.primary, padding: 12, borderRadius: 30, shadowColor: colors.primary, shadowOpacity: 0.4, shadowRadius: 8, elevation: 5 },
-    card: { 
-        backgroundColor: colors.surface, 
-        padding: 24, 
-        borderRadius: 24, 
-        marginBottom: 16, 
+    card: {
+        backgroundColor: colors.surface,
+        padding: 24,
+        borderRadius: 24,
+        marginBottom: 16,
         borderWidth: 1,
         borderColor: colors.border
     },
@@ -151,12 +153,12 @@ const styles = StyleSheet.create({
     modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
     modalContent: { backgroundColor: colors.surface, padding: 24, borderRadius: 30, borderWidth: 1, borderColor: colors.border },
     modalHeader: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: colors.text },
-    input: { 
-        borderWidth: 1, 
-        borderColor: colors.border, 
-        borderRadius: 16, 
-        padding: 16, 
-        marginBottom: 16, 
+    input: {
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
         fontSize: 16,
         backgroundColor: colors.inputBg,
         color: colors.text

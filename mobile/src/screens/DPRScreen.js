@@ -76,6 +76,7 @@ const DPRScreen = () => {
                     style={[styles.input, styles.textArea]}
                     multiline
                     placeholder="Describe work done today..."
+                    placeholderTextColor="#ccc"
                     value={workSummary}
                     onChangeText={setWorkSummary}
                 />
@@ -87,6 +88,7 @@ const DPRScreen = () => {
                     style={[styles.input, styles.textArea]}
                     multiline
                     placeholder="Any blockers?"
+                    placeholderTextColor="#ccc"
                     value={issues}
                     onChangeText={setIssues}
                 />
