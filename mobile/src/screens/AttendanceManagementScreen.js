@@ -19,7 +19,7 @@ const AttendanceManagementScreen = () => {
             // Checking implementation plan: "View Worker Attendance".
             // Checking backend controller: getAttendance only returns req.user.id's attendance.
             // I MUST update backend controller first.
-            const res = await api.get('/attendance/site'); 
+            const res = await api.get('/attendance/site');
             setAttendanceList(res.data);
         } catch (error) {
             console.error(error);
@@ -36,10 +36,10 @@ const AttendanceManagementScreen = () => {
 
     const verifyAttendance = async (id, status) => {
         try {
-             await api.put(`/attendance/${id}/verify`, { status });
-             Alert.alert('Success', `Attendance marked as ${status}`);
-             setSelectedRecord(null);
-             fetchAttendance();
+            await api.put(`/attendance/${id}/verify`, { status });
+            Alert.alert('Success', `Attendance marked as ${status}`);
+            setSelectedRecord(null);
+            fetchAttendance();
         } catch (error) {
             Alert.alert('Error', 'Failed to update attendance');
         }
@@ -63,7 +63,7 @@ const AttendanceManagementScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Team Attendance</Text>
-            <FlatList 
+            <FlatList
                 data={attendanceList}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
@@ -75,13 +75,13 @@ const AttendanceManagementScreen = () => {
                 <View style={styles.modalBg}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{selectedRecord?.user?.name}</Text>
-                        
+
                         {selectedRecord?.checkInPhoto && (
                             <Image source={{ uri: selectedRecord.checkInPhoto }} style={styles.photo} />
                         )}
-                        
+
                         <View style={styles.infoRow}>
-                            <Text>Location Match: {selectedRecord?.checkInLocation?.withinFence ? 'Yes' : 'No'}</Text>
+                            <Text style={{ color: 'white' }}>Location Match: {selectedRecord?.checkInLocation?.withinFence ? 'Yes' : 'No'}</Text>
                         </View>
 
                         <View style={styles.modalBtns}>
@@ -92,8 +92,8 @@ const AttendanceManagementScreen = () => {
                                 <Text style={styles.btnText}>Approve</Text>
                             </TouchableOpacity>
                         </View>
-                         <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedRecord(null)}>
-                                <Text style={{color: colors.info}}>Close</Text>
+                        <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedRecord(null)}>
+                            <Text style={{ color: colors.info }}>Close</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -105,10 +105,10 @@ const AttendanceManagementScreen = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.background },
     title: { fontSize: 32, fontWeight: '900', marginBottom: 24, color: colors.text, letterSpacing: 1 },
-    card: { 
-        backgroundColor: colors.surface, 
-        padding: 20, 
-        borderRadius: 24, 
+    card: {
+        backgroundColor: colors.surface,
+        padding: 20,
+        borderRadius: 24,
         marginBottom: 12,
         borderWidth: 1,
         borderColor: colors.border
