@@ -4,6 +4,8 @@ import { colors } from '../constants/colors';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 const RequestScreen = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,6 +17,10 @@ const RequestScreen = () => {
     const [quantity, setQuantity] = useState('');
     const [unit, setUnit] = useState('');
     const [urgency, setUrgency] = useState('Medium');
+    
+    // Date Picker
+    const [requiredDate, setRequiredDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     // Presets
     const [presets, setPresets] = useState([]);
@@ -73,12 +79,14 @@ const RequestScreen = () => {
                 items: cart,
                 urgency,
                 siteLocation: { lat: 0, lng: 0, address: 'Site A' },
-                type: 'Material'
+                type: 'Material',
+                requiredBy: requiredDate
             });
             Alert.alert('Success', 'Request Sent');
             setModalVisible(false);
             setCart([]); // Clear cart
             setUrgency('Medium');
+            setRequiredDate(new Date());
             fetchRequests();
         } catch (error) {
             Alert.alert('Error', 'Failed to submit request');
@@ -89,6 +97,12 @@ const RequestScreen = () => {
         setItemName(preset.name);
         setUnit(preset.unit);
         setShowPresets(false);
+    };
+
+    const onDateChange = (event, selectedDate) => {
+        const currentDate = selectedDate || requiredDate;
+        setShowDatePicker(false);
+        setRequiredDate(currentDate);
     };
 
     const renderItem = ({ item }) => (
@@ -104,6 +118,7 @@ const RequestScreen = () => {
                 <Text style={styles.meta}>Urgency: {item.urgency}</Text>
                 {item.payment?.status === 'Paid' && <Text style={{ color: 'green', fontWeight: 'bold' }}>Paid</Text>}
             </View>
+             {item.requiredBy && <Text style={styles.meta}>Required By: {new Date(item.requiredBy).toLocaleDateString()}</Text>}
             <Text style={styles.meta}>Date: {new Date(item.createdAt).toLocaleDateString()}</Text>
         </View>
     );
@@ -172,6 +187,20 @@ const RequestScreen = () => {
                                             ))}
                                         </ScrollView>
                                     </View>
+                                )}
+
+                                <Text style={styles.label}>Required Till Date:</Text>
+                                <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+                                    <Text style={{ color: colors.text }}>{requiredDate.toDateString()}</Text>
+                                </TouchableOpacity>
+                                {showDatePicker && (
+                                    <DateTimePicker
+                                        value={requiredDate}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onDateChange}
+                                        minimumDate={new Date()}
+                                    />
                                 )}
 
                                 <Text style={styles.label}>Urgency:</Text>

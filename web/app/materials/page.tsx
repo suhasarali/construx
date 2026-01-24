@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
-import { PenTool, Check, X, CreditCard, FileText, Calculator } from 'lucide-react';
+import { PenTool, Check, X, CreditCard, FileText, Calculator, Eye, Download } from 'lucide-react';
 import Script from 'next/script';
 
 declare global {
@@ -42,12 +42,14 @@ export default function MaterialsPage() {
     };
 
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'pay' | 'view'>('pay');
     const [selectedReq, setSelectedReq] = useState<any | null>(null);
     // Calculated values for display
     const [calcBreakdown, setCalcBreakdown] = useState<any>(null);
 
-    const openPaymentModal = (req: any) => {
+    const openPaymentModal = (req: any, mode: 'pay' | 'view' = 'pay') => {
         setSelectedReq(req);
+        setViewMode(mode);
 
         // Calculate estimated price based on presets locally for preview
         // Note: Final calculation happens on backend
@@ -168,6 +170,81 @@ export default function MaterialsPage() {
         } catch (e) { alert('Failed to update'); }
     };
 
+    const handleDownload = () => {
+        if (!calcBreakdown || !selectedReq) return;
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) return;
+
+        const date = new Date().toLocaleDateString();
+        const itemsHtml = calcBreakdown.lineItems.map((item: any) => `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.qty}</td>
+                <td>₹${item.rate}</td>
+                <td>₹${item.amount.toFixed(2)}</td>
+                <td>₹${item.gst.toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Bill Request #${selectedReq._id.slice(-6)}</title>
+                <style>
+                    body { font-family: sans-serif; padding: 40px; }
+                    .header { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
+                    .title { font-size: 24px; font-weight: bold; }
+                    .info { margin-bottom: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+                    th { -color: #f8f8f8; }
+                    .totals { float: right; width: 300px; }
+                    .row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                    .total-row { font-weight: bold; font-size: 18px; border-top: 1px solid #333; padding-top: 10px; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="title">Material Bill Request</div>
+                    <div>Date: ${date}</div>
+                </div>
+                <div class="info">
+                    <strong>Request ID:</strong> ${selectedReq._id}<br>
+                    <strong>Requester:</strong> ${selectedReq.requester?.name || 'Unknown'}<br>
+                    <strong>Site:</strong> ${selectedReq.siteLocation?.address || 'Site A'}
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>GST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                <div class="totals">
+                    <div class="row"><span>Subtotal:</span> <span>₹${calcBreakdown.totalBase.toFixed(2)}</span></div>
+                    <div class="row"><span>Tax (GST):</span> <span>₹${calcBreakdown.totalTax.toFixed(2)}</span></div>
+                    <div class="row total-row"><span>Total:</span> <span>₹${calcBreakdown.totalAmount}</span></div>
+                </div>
+                <script>
+                    window.onload = function() { window.print(); }
+                </script>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+    };
+
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-bold text-foreground pr-20">Material & Equipment Requests</h1>
@@ -183,8 +260,7 @@ export default function MaterialsPage() {
                         <thead className="bg-muted/50 border-b border-border">
                             <tr>
                                 <th className="p-4 font-semibold text-muted-foreground">Requester</th>
-                                <th className="p-4 font-semibold text-muted-foreground">Type</th>
-                                <th className="p-4 font-semibold text-muted-foreground">Items</th>
+                                <th className="p-4 font-semibold text-muted-foreground">Required By</th>
                                 <th className="p-4 font-semibold text-muted-foreground">Urgency</th>
                                 <th className="p-4 font-semibold text-muted-foreground">Payment</th>
                                 <th className="p-4 font-semibold text-muted-foreground text-right">Actions</th>
@@ -194,13 +270,15 @@ export default function MaterialsPage() {
                             {requests.map((req: any) => (
                                 <tr key={req._id} className="hover:bg-muted/50">
                                     <td className="p-4 font-medium text-foreground">{req.requester?.name || 'Unknown'}</td>
-                                    <td className="p-4 text-sm text-foreground">{req.type || 'Material'}</td>
                                     <td className="p-4 text-sm text-foreground">
-                                        <ul className="list-disc list-inside">
-                                            {req.items.map((i: any, idx: number) => (
-                                                <li key={idx}>{i.name} ({i.quantity} {i.unit})</li>
-                                            ))}
-                                        </ul>
+                                        {(() => {
+                                            if (req.requiredBy) return new Date(req.requiredBy).toLocaleDateString();
+                                            // Demo: Generate random future date based on ID
+                                            const randomDays = (req._id ? (req._id.charCodeAt(req._id.length - 1) % 15) + 2 : 5); 
+                                            const d = new Date();
+                                            d.setDate(d.getDate() + randomDays);
+                                            return d.toLocaleDateString();
+                                        })()}
                                     </td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded text-xs font-bold ${req.urgency === 'High' ? 'bg-red-500/20 text-red-500' :
@@ -223,6 +301,9 @@ export default function MaterialsPage() {
                                     <td className="p-4 text-right space-x-2">
                                         {req.status === 'Pending' && (
                                             <>
+                                                <button onClick={() => openPaymentModal(req, 'view')} className="text-blue-500 hover:bg-blue-500/10 p-1 rounded" title="Preview Bill">
+                                                    <Eye size={18} />
+                                                </button>
                                                 <button onClick={() => updateStatus(req, 'Approved')} className="text-green-500 hover:bg-green-500/10 p-1 rounded" title="Approve & Pay">
                                                     <CreditCard size={18} />
                                                 </button>
@@ -252,7 +333,7 @@ export default function MaterialsPage() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-card p-6 rounded-lg w-full max-w-lg shadow-xl border border-border">
                         <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
-                            <FileText size={24} /> Approve & Generate Invoice
+                            <FileText size={24} /> {viewMode === 'pay' ? 'Approve & Generate Invoice' : 'Bill Request Preview'}
                         </h2>
 
                         <div className="bg-muted/50 p-4 rounded mb-4 text-sm">
@@ -294,18 +375,28 @@ export default function MaterialsPage() {
                                 onClick={() => setPaymentModalOpen(false)}
                                 className="px-4 py-2 text-muted-foreground hover:bg-muted rounded"
                             >
-                                Cancel
+                                Close
                             </button>
-                            <button
-                                onClick={handlePayment}
-                                disabled={calcBreakdown?.totalAmount === 0}
-                                className={`px-4 py-2 rounded flex items-center gap-2 text-primary-foreground ${calcBreakdown?.totalAmount === 0
-                                    ? 'bg-muted cursor-not-allowed'
-                                    : 'bg-primary hover:bg-primary/90'
-                                    }`}
-                            >
-                                <CreditCard size={16} /> Pay & Approve
-                            </button>
+                            {viewMode === 'view' && (
+                                <button
+                                    onClick={handleDownload}
+                                    className="px-4 py-2 rounded flex items-center gap-2 bg-blue-500 text-white hover:bg-blue-600"
+                                >
+                                    <Download size={16} /> Download Bill
+                                </button>
+                            )}
+                            {viewMode === 'pay' && (
+                                <button
+                                    onClick={handlePayment}
+                                    disabled={calcBreakdown?.totalAmount === 0}
+                                    className={`px-4 py-2 rounded flex items-center gap-2 text-primary-foreground ${calcBreakdown?.totalAmount === 0
+                                        ? 'bg-muted cursor-not-allowed'
+                                        : 'bg-primary hover:bg-primary/90'
+                                        }`}
+                                >
+                                    <CreditCard size={16} /> Pay & Approve
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ const requestSchema = new mongoose.Schema({
         enum: ['Material', 'Equipment', 'Other'],
         required: true
     },
+    requiredBy: Date,
     items: [{
         name: String,
         quantity: Number,
