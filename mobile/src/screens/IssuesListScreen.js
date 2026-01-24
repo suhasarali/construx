@@ -72,7 +72,16 @@ const IssuesListScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Reported Issues</Text>
+            <View style={styles.headerRow}>
+                <Text style={styles.title}>Reported Issues</Text>
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate('ReportIssue')}
+                >
+                    <Ionicons name="add" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
+
             {issues.length === 0 ? (
                 <View style={styles.center}>
                     <Ionicons name="checkmark-circle-outline" size={64} color={colors.success} />
@@ -86,13 +95,6 @@ const IssuesListScreen = ({ navigation }) => {
                     contentContainerStyle={styles.list}
                 />
             )}
-
-            <TouchableOpacity
-                style={styles.fab}
-                onPress={() => navigation.navigate('ReportIssue')}
-            >
-                <Ionicons name="add" size={32} color="white" />
-            </TouchableOpacity>
         </View>
     );
 };
@@ -100,22 +102,17 @@ const IssuesListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, padding: 20, paddingTop: 50 },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 24, fontWeight: 'bold', color: colors.text, marginBottom: 20 },
+    headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+    title: { fontSize: 24, fontWeight: 'bold', color: colors.text },
     list: { paddingBottom: 100 },
-    fab: {
-        position: 'absolute',
-        bottom: 30,
-        right: 30,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+    addButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         backgroundColor: colors.danger,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: colors.danger,
-        shadowOpacity: 0.4,
-        shadowRadius: 10,
-        elevation: 6
+        elevation: 2
     },
     card: {
         backgroundColor: colors.surface,
