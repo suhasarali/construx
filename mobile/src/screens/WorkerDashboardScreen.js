@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 
+import { colors } from '../constants/colors';
+
 const WorkerDashboardScreen = () => {
     const { userInfo, logout } = useContext(AuthContext);
     const navigation = useNavigation();
@@ -65,7 +67,7 @@ const WorkerDashboardScreen = () => {
                     <Text style={styles.role}>{userInfo?.role}</Text>
                 </View>
                 <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-                    <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+                    <Ionicons name="log-out-outline" size={24} color={colors.danger} />
                 </TouchableOpacity>
             </View>
 
@@ -75,42 +77,41 @@ const WorkerDashboardScreen = () => {
                     <Ionicons 
                         name={stats.attendance === 'Checked In' ? "checkmark-circle" : "time-outline"} 
                         size={32} 
-                        color={stats.attendance === 'Checked In' ? "#34C759" : "#FF9500"} 
+                        color={stats.attendance === 'Checked In' ? colors.success : colors.warning} 
                     />
                     <Text style={styles.statusText}>{stats.attendance}</Text>
                 </View>
                 {stats.attendance === 'Not Checked In' && (
                     <TouchableOpacity 
                         style={styles.actionBtn}
-                        onPress={() => navigation.navigate('Attendance')} // This will be in the tab bar, maybe navigate to tab?
-                        // Or better, just use the Attendance components here or navigate to a dedicated CheckIn screen
+                        onPress={() => navigation.navigate('Attendance')} 
                     >
-                        <Text style={styles.btnText}>Go to Check In</Text>
+                        <Text style={styles.btnText}>Check In Now</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
             <View style={styles.grid}>
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Tasks')}>
-                    <Ionicons name="clipboard-outline" size={32} color="#007AFF" />
+                    <Ionicons name="clipboard-outline" size={32} color={colors.primary} />
                     <Text style={styles.gridValue}>{stats.pendingTasks}</Text>
                     <Text style={styles.gridLabel}>Pending Tasks</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.gridItem}>
-                    <Ionicons name="warning-outline" size={32} color="#FF9500" />
+                    <Ionicons name="warning-outline" size={32} color={colors.warning} />
                     <Text style={styles.gridValue}>0</Text>
                     <Text style={styles.gridLabel}>Issues</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Communication')}>
-                    <Ionicons name="chatbubbles-outline" size={32} color="#AF52DE" />
+                    <Ionicons name="chatbubbles-outline" size={32} color={colors.primary} />
                     <Text style={styles.gridValue}>Msg</Text>
                     <Text style={styles.gridLabel}>Messages</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DailyWork')}>
-                    <Ionicons name="cloud-upload-outline" size={32} color="#34C759" />
+                    <Ionicons name="cloud-upload-outline" size={32} color={colors.success} />
                     <Text style={styles.gridValue}>+</Text>
                     <Text style={styles.gridLabel}>Daily Work</Text>
                 </TouchableOpacity>
@@ -120,23 +121,48 @@ const WorkerDashboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 20, paddingTop: 60, flex: 1, backgroundColor: '#F2F2F7' },
-    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25 },
-    greeting: { fontSize: 16, color: '#8E8E93' },
-    name: { fontSize: 24, fontWeight: 'bold', color: '#000' },
-    role: { fontSize: 14, color: '#007AFF', marginTop: 2 },
-    logoutBtn: { padding: 5 },
-    statusCard: { backgroundColor: 'white', padding: 20, borderRadius: 15, marginBottom: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
-    cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 15, color: '#3A3A3C' },
-    statusRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
-    statusText: { fontSize: 20, fontWeight: 'bold', marginLeft: 10, color: '#000' },
-    actionBtn: { backgroundColor: '#007AFF', padding: 12, borderRadius: 10, alignItems: 'center' },
-    btnText: { color: 'white', fontWeight: '600' },
-    btnText: { color: 'white', fontWeight: '600' },
+    container: { padding: 24, paddingTop: 60, flex: 1, backgroundColor: colors.background },
+    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, alignItems: 'center' },
+    greeting: { fontSize: 16, color: colors.textSecondary, letterSpacing: 1 },
+    name: { fontSize: 32, fontWeight: '900', color: colors.text, marginVertical: 4 },
+    role: { fontSize: 14, color: colors.primary, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
+    logoutBtn: { padding: 10, backgroundColor: colors.surfaceHighlight, borderRadius: 12 },
+    statusCard: { 
+        backgroundColor: colors.surface, 
+        padding: 24, 
+        borderRadius: 24, 
+        marginBottom: 24, 
+        borderWidth: 1,
+        borderColor: colors.border,
+        // Removed heavy shadow for cleaner dark look
+    },
+    cardTitle: { fontSize: 16, fontWeight: '600', marginBottom: 20, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 1 },
+    statusRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+    statusText: { fontSize: 24, fontWeight: 'bold', marginLeft: 16, color: colors.text },
+    actionBtn: { 
+        backgroundColor: colors.primary, 
+        padding: 16, 
+        borderRadius: 16, 
+        alignItems: 'center',
+        shadowColor: colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8, 
+    },
+    btnText: { color: colors.textInverted, fontWeight: 'bold', fontSize: 16 },
     grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-    gridItem: { backgroundColor: 'white', padding: 20, borderRadius: 15, width: '48%', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2, marginBottom: 15 },
-    gridValue: { fontSize: 28, fontWeight: 'bold', marginVertical: 5 },
-    gridLabel: { color: '#8E8E93' }
+    gridItem: { 
+        backgroundColor: colors.surface, 
+        padding: 20, 
+        borderRadius: 24, 
+        width: '48%', 
+        alignItems: 'center', 
+        marginBottom: 16,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    gridValue: { fontSize: 32, fontWeight: '900', marginVertical: 8, color: colors.text },
+    gridLabel: { color: colors.textSecondary, fontSize: 12, fontWeight: '600', textTransform: 'uppercase' }
 });
 
 export default WorkerDashboardScreen;

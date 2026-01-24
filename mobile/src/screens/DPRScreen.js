@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { colors } from '../constants/colors';
 import * as ImagePicker from 'expo-image-picker';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
@@ -117,17 +118,46 @@ const DPRScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 20, paddingTop: 60, backgroundColor: '#fff', flexGrow: 1 },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 30 },
-    section: { marginBottom: 20 },
-    label: { fontSize: 16, fontWeight: '600', marginBottom: 10, color: '#333' },
-    input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 16, backgroundColor: '#F9F9F9' },
-    textArea: { height: 100, textAlignVertical: 'top' },
+    container: { padding: 24, paddingTop: 60, backgroundColor: colors.background, flexGrow: 1 },
+    title: { fontSize: 32, fontWeight: '900', marginBottom: 30, color: colors.text, letterSpacing: 1 },
+    section: { marginBottom: 24 },
+    label: { fontSize: 16, fontWeight: '700', marginBottom: 12, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 1 },
+    input: { 
+        borderWidth: 1, 
+        borderColor: colors.border, 
+        borderRadius: 16, 
+        padding: 16, 
+        fontSize: 16, 
+        backgroundColor: colors.inputBg,
+        color: colors.text
+    },
+    textArea: { height: 120, textAlignVertical: 'top' },
     photoRow: { flexDirection: 'row' },
-    thumb: { width: 80, height: 80, borderRadius: 10, marginRight: 10 },
-    addPhoto: { width: 80, height: 80, borderRadius: 10, borderWidth: 1, borderColor: '#007AFF', justifyContent: 'center', alignItems: 'center',borderStyle: 'dashed' },
-    submitBtn: { backgroundColor: '#000', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, marginBottom: 40 },
-    btnText: { color: 'white', fontWeight: 'bold', fontSize: 18 }
+    thumb: { width: 90, height: 90, borderRadius: 16, marginRight: 12, borderWidth: 1, borderColor: colors.border },
+    addPhoto: { 
+        width: 90, 
+        height: 90, 
+        borderRadius: 16, 
+        borderWidth: 2, 
+        borderColor: colors.primary, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderStyle: 'dashed',
+        backgroundColor: colors.surfaceHighlight
+    },
+    submitBtn: { 
+        backgroundColor: colors.primary, 
+        padding: 20, 
+        borderRadius: 20, 
+        alignItems: 'center', 
+        marginTop: 20, 
+        marginBottom: 40,
+        shadowColor: colors.primary,
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 5
+    },
+    btnText: { color: colors.textInverted, fontWeight: 'bold', fontSize: 18, textTransform: 'uppercase' }
 });
 
 export default DPRScreen;

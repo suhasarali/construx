@@ -7,12 +7,18 @@ import RequestScreen from '../screens/RequestScreen';
 import DPRScreen from '../screens/DPRScreen';
 import CommunicationScreen from '../screens/CommunicationScreen';
 
+import { colors } from '../constants/colors';
+
 const Tab = createBottomTabNavigator();
 
 const EngineerStack = () => {
     return (
         <Tab.Navigator
              screenOptions={({ route }) => ({
+                headerStyle: { backgroundColor: colors.headerBackground },
+                headerTintColor: colors.headerTint,
+                tabBarActiveTintColor: colors.tabBarActive,
+                tabBarInactiveTintColor: colors.tabBarInactive,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     if (route.name === 'Dashboard') iconName = focused ? 'home' : 'home-outline';

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Image, Modal } from 'react-native';
+import { colors } from '../constants/colors';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -52,7 +53,7 @@ const AttendanceManagementScreen = () => {
                     <Text style={styles.time}>In: {item.checkInTime ? new Date(item.checkInTime).toLocaleTimeString() : '--'}</Text>
                     <Text style={styles.time}>Out: {item.checkOutTime ? new Date(item.checkOutTime).toLocaleTimeString() : '--'}</Text>
                 </View>
-                <View style={[styles.badge, { backgroundColor: item.status === 'Present' ? '#34C759' : '#FF9500' }]}>
+                <View style={[styles.badge, { backgroundColor: item.status === 'Present' ? colors.success : colors.warning }]}>
                     <Text style={styles.badgeText}>{item.status}</Text>
                 </View>
             </View>
@@ -92,7 +93,7 @@ const AttendanceManagementScreen = () => {
                             </TouchableOpacity>
                         </View>
                          <TouchableOpacity style={styles.closeBtn} onPress={() => setSelectedRecord(null)}>
-                                <Text style={{color: '#007AFF'}}>Close</Text>
+                                <Text style={{color: colors.info}}>Close</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -102,23 +103,31 @@ const AttendanceManagementScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#F2F2F7' },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-    card: { backgroundColor: 'white', padding: 15, borderRadius: 10, marginBottom: 10 },
+    container: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.background },
+    title: { fontSize: 32, fontWeight: '900', marginBottom: 24, color: colors.text, letterSpacing: 1 },
+    card: { 
+        backgroundColor: colors.surface, 
+        padding: 20, 
+        borderRadius: 24, 
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: colors.border
+    },
     row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    name: { fontSize: 16, fontWeight: 'bold' },
-    time: { fontSize: 12, color: '#666' },
-    badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 5 },
-    badgeText: { color: 'white', fontSize: 12, fontWeight: 'bold' },
-    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
-    modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 15, alignItems: 'center' },
-    modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-    photo: { width: 200, height: 200, borderRadius: 10, marginBottom: 15 },
-    modalBtns: { flexDirection: 'row', width: '100%', justifyContent: 'space-between', marginTop: 20 },
-    rejectBtn: { backgroundColor: '#FF3B30', padding: 15, borderRadius: 10, width: '45%', alignItems: 'center' },
-    approveBtn: { backgroundColor: '#34C759', padding: 15, borderRadius: 10, width: '45%', alignItems: 'center' },
-    btnText: { color: 'white', fontWeight: 'bold' },
-    closeBtn: { marginTop: 15 }
+    name: { fontSize: 18, fontWeight: 'bold', color: colors.text },
+    time: { fontSize: 13, color: colors.textSecondary, marginTop: 4 },
+    badge: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
+    badgeText: { color: colors.textInverted, fontSize: 12, fontWeight: 'bold' },
+    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
+    modalContent: { backgroundColor: colors.surface, padding: 30, borderRadius: 30, alignItems: 'center', borderWidth: 1, borderColor: colors.border },
+    modalTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: colors.text },
+    photo: { width: 220, height: 220, borderRadius: 20, marginBottom: 20, borderWidth: 4, borderColor: colors.primary },
+    modalBtns: { flexDirection: 'row', width: '100%', justifyContent: 'space-between', marginTop: 30 },
+    rejectBtn: { backgroundColor: colors.danger, padding: 16, borderRadius: 16, width: '45%', alignItems: 'center' },
+    approveBtn: { backgroundColor: colors.success, padding: 16, borderRadius: 16, width: '45%', alignItems: 'center' },
+    btnText: { color: colors.textInverted, fontWeight: 'bold', fontSize: 16 },
+    closeBtn: { marginTop: 24, padding: 10 },
+    infoRow: { marginBottom: 10 }
 });
 
 export default AttendanceManagementScreen;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { colors } from '../constants/colors';
+
 import {
   View,
   Text,
@@ -292,60 +294,72 @@ const AttendanceScreen = () => {
   );
 };
 
-/* -------------------- STYLES -------------------- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     paddingTop: 60,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.background,
   },
   header: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '900',
     marginBottom: 30,
+    color: colors.text,
+    letterSpacing: 1,
   },
   retry: {
     marginBottom: 20,
     alignSelf: 'flex-start',
+    backgroundColor: colors.surfaceHighlight,
+    padding: 12,
+    borderRadius: 12,
   },
   retryText: {
-    color: '#007AFF',
-    fontSize: 16,
+    color: colors.info,
+    fontSize: 14,
+    fontWeight: '600',
   },
   statusCard: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    padding: 24,
+    borderRadius: 24,
     alignItems: 'center',
     marginBottom: 30,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  label: { color: '#8E8E93', marginBottom: 5 },
+  label: { color: colors.textSecondary, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1, fontSize: 12, fontWeight: '600' },
   value: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    fontSize: 28,
+    fontWeight: '900',
+    color: colors.text,
   },
   actionArea: { flex: 1, justifyContent: 'center' },
   cameraBtn: {
-    backgroundColor: '#3A3A3C',
-    padding: 30,
-    borderRadius: 20,
+    backgroundColor: colors.surfaceHighlight,
+    padding: 40,
+    borderRadius: 30,
     alignItems: 'center',
     marginBottom: 30,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
   },
   cameraText: {
-    color: 'white',
-    marginTop: 10,
+    color: colors.textSecondary,
+    marginTop: 16,
     fontWeight: 'bold',
+    fontSize: 18,
   },
   photoContainer: { alignItems: 'center', marginBottom: 30 },
-  preview: { width: 200, height: 200, borderRadius: 100 },
+  preview: { width: 220, height: 220, borderRadius: 110, borderWidth: 4, borderColor: colors.primary },
   retakeBtn: {
-    backgroundColor: 'red',
-    padding: 8,
-    borderRadius: 5,
-    marginTop: 10,
+    backgroundColor: colors.danger,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginTop: 16,
   },
   buttons: {
     flexDirection: 'row',
@@ -354,16 +368,21 @@ const styles = StyleSheet.create({
   btn: {
     width: '48%',
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 20,
     alignItems: 'center',
+    shadowColor: colors.cardShadow,
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  inBtn: { backgroundColor: '#34C759' },
-  outBtn: { backgroundColor: '#FF3B30' },
-  disabled: { opacity: 0.3 },
+  inBtn: { backgroundColor: colors.success },
+  outBtn: { backgroundColor: colors.danger },
+  disabled: { opacity: 0.4 },
   btnText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
+    textTransform: 'uppercase',
   },
 });
 

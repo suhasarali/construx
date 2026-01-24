@@ -4,16 +4,18 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 
+import { colors } from '../constants/colors';
+
 const EngineerDashboardScreen = () => {
     const { logout, userInfo } = useContext(AuthContext);
     const navigation = useNavigation();
 
     const menuItems = [
-        { title: 'Attendance Management', icon: 'people', screen: 'AttendanceManagement', color: '#FF9500' },
-        { title: 'Task Management', icon: 'clipboard', screen: 'TaskManagement', color: '#007AFF' },
-        { title: 'Material Requests', icon: 'cube', screen: 'Requests', color: '#5856D6' },
-        { title: 'Daily Progress Report', icon: 'stats-chart', screen: 'DPR', color: '#34C759' },
-        { title: 'Team Communication', icon: 'chatbubbles', screen: 'Communication', color: '#AF52DE' },
+        { title: 'Attendance Management', icon: 'people', screen: 'AttendanceManagement' },
+        { title: 'Task Management', icon: 'clipboard', screen: 'TaskManagement' },
+        { title: 'Material Requests', icon: 'cube', screen: 'Requests' },
+        { title: 'Daily Progress Report', icon: 'stats-chart', screen: 'DPR' },
+        { title: 'Team Communication', icon: 'chatbubbles', screen: 'Communication' },
     ];
 
     return (
@@ -25,7 +27,7 @@ const EngineerDashboardScreen = () => {
                      <Text style={styles.role}>Site Engineer</Text>
                 </View>
                 <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-                    <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+                    <Ionicons name="log-out-outline" size={24} color={colors.danger} />
                 </TouchableOpacity>
             </View>
 
@@ -36,8 +38,8 @@ const EngineerDashboardScreen = () => {
                         style={styles.card} 
                         onPress={() => navigation.navigate(item.screen)}
                     >
-                        <View style={[styles.iconContainer, { backgroundColor: item.color + '20' }]}>
-                             <Ionicons name={item.icon} size={32} color={item.color} />
+                        <View style={styles.iconContainer}>
+                             <Ionicons name={item.icon} size={32} color={colors.primary} />
                         </View>
                         <Text style={styles.cardTitle}>{item.title}</Text>
                     </TouchableOpacity>
@@ -48,15 +50,38 @@ const EngineerDashboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 20, paddingTop: 60, flex: 1, backgroundColor: '#F2F2F7' },
-    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
-    greeting: { fontSize: 16, color: '#8E8E93' },
-    name: { fontSize: 24, fontWeight: 'bold' },
-    role: { color: '#007AFF', marginTop: 2 },
+    container: { padding: 24, paddingTop: 60, flex: 1, backgroundColor: colors.background },
+    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, alignItems: 'center' },
+    greeting: { fontSize: 16, color: colors.textSecondary, letterSpacing: 1 },
+    name: { fontSize: 32, fontWeight: '900', color: colors.text, marginVertical: 4 },
+    role: { fontSize: 14, color: colors.primary, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
+    logoutBtn: { padding: 10, backgroundColor: colors.surfaceHighlight, borderRadius: 12 },
     grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-    card: { backgroundColor: 'white', width: '48%', padding: 20, borderRadius: 15, marginBottom: 15, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
-    iconContainer: { padding: 15, borderRadius: 50, marginBottom: 15 },
-    cardTitle: { fontWeight: '600', textAlign: 'center' }
+    card: { 
+        backgroundColor: colors.surface, 
+        width: '48%', 
+        padding: 24, 
+        borderRadius: 24, 
+        marginBottom: 16, 
+        alignItems: 'center', 
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    iconContainer: { 
+        padding: 16, 
+        borderRadius: 50, 
+        marginBottom: 16, 
+        backgroundColor: colors.surfaceHighlight,
+        borderWidth: 1,
+        borderColor: colors.border
+    },
+    cardTitle: { 
+        fontWeight: '700', 
+        textAlign: 'center', 
+        color: colors.text, 
+        fontSize: 14,
+        lineHeight: 20
+    }
 });
 
 export default EngineerDashboardScreen;

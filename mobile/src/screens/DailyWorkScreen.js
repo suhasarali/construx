@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Image, ActivityIndicator } from 'react-native';
+import { colors } from '../constants/colors';
 import * as ImagePicker from 'expo-image-picker';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
@@ -60,7 +61,7 @@ const DailyWorkScreen = () => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                    <Ionicons name="arrow-back" size={24} color="#000" />
+                    <Ionicons name="arrow-back" size={24} color={colors.text} />
                 </TouchableOpacity>
                 <Text style={styles.title}>Daily Work Upload</Text>
             </View>
@@ -104,20 +105,40 @@ const DailyWorkScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5', flexGrow: 1 },
-    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-    backBtn: { marginRight: 15 },
-    title: { fontSize: 24, fontWeight: 'bold' },
-    section: { marginBottom: 20, backgroundColor: '#fff', padding: 15, borderRadius: 10 },
-    label: { fontSize: 16, fontWeight: '600', marginBottom: 10, color: '#333' },
-    input: { fontSize: 16, color: '#333' },
-    textArea: { height: 120, textAlignVertical: 'top' },
+    container: { padding: 24, paddingTop: 60, backgroundColor: colors.background, flexGrow: 1 },
+    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 30 },
+    backBtn: { marginRight: 15, padding: 8, backgroundColor: colors.surfaceHighlight, borderRadius: 12 },
+    title: { fontSize: 28, fontWeight: '900', color: colors.text, letterSpacing: 1 },
+    section: { marginBottom: 24, backgroundColor: colors.surface, padding: 24, borderRadius: 24, borderWidth: 1, borderColor: colors.border },
+    label: { fontSize: 16, fontWeight: '700', marginBottom: 16, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 1 },
+    input: { fontSize: 16, color: colors.text, backgroundColor: colors.inputBg, borderRadius: 12, padding: 16 },
+    textArea: { height: 140, textAlignVertical: 'top' },
     photoRow: { flexDirection: 'row' },
-    thumb: { width: 80, height: 80, borderRadius: 10, marginRight: 10 },
-    addPhoto: { width: 80, height: 80, borderRadius: 10, borderWidth: 1, borderColor: '#007AFF', justifyContent: 'center', alignItems: 'center', borderStyle: 'dashed' },
-    submitBtn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
-    disabledBtn: { backgroundColor: '#ccc' },
-    btnText: { color: 'white', fontWeight: 'bold', fontSize: 18 }
+    thumb: { width: 90, height: 90, borderRadius: 16, marginRight: 12, borderWidth: 1, borderColor: colors.border },
+    addPhoto: { 
+        width: 90, 
+        height: 90, 
+        borderRadius: 16, 
+        borderWidth: 2, 
+        borderColor: colors.primary, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        borderStyle: 'dashed',
+        backgroundColor: colors.surfaceHighlight 
+    },
+    submitBtn: { 
+        backgroundColor: colors.primary, 
+        padding: 20, 
+        borderRadius: 20, 
+        alignItems: 'center', 
+        marginTop: 10,
+        shadowColor: colors.primary, 
+        shadowOpacity: 0.3, 
+        shadowRadius: 10, 
+        elevation: 5 
+    },
+    disabledBtn: { backgroundColor: colors.surfaceHighlight, opacity: 0.5 },
+    btnText: { color: colors.textInverted, fontWeight: 'bold', fontSize: 18, textTransform: 'uppercase' }
 });
 
 export default DailyWorkScreen;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert, Modal, ScrollView } from 'react-native';
+import { colors } from '../constants/colors';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -94,7 +95,7 @@ const RequestScreen = () => {
         <View style={styles.card}>
             <View style={styles.header}>
                 <Text style={styles.cardTitle}>{item.type} Request</Text>
-                <Text style={[styles.status, {color: item.status === 'Approved' ? 'green' : 'orange'}]}>{item.status}</Text>
+                <Text style={[styles.status, {color: item.status === 'Approved' ? colors.success : colors.warning}]}>{item.status}</Text>
             </View>
             {item.items.map((i, index) => (
                 <Text key={index} style={styles.itemText}>• {i.name}: {i.quantity} {i.unit}</Text>
@@ -206,36 +207,51 @@ const RequestScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#F2F2F7' },
+    container: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.background },
     topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-    screenTitle: { fontSize: 24, fontWeight: 'bold' },
-    addBtn: { backgroundColor: '#007AFF', padding: 10, borderRadius: 20 },
-    card: { backgroundColor: 'white', padding: 15, borderRadius: 12, marginBottom: 15 },
-    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-    cardTitle: { fontSize: 16, fontWeight: 'bold' },
-    status: { fontWeight: 'bold' },
-    itemText: { fontSize: 16, marginBottom: 5 },
-    meta: { fontSize: 12, color: '#999', marginTop: 5 },
-    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
-    modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 15 },
-    modalHeader: { fontSize: 20, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-    input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, marginBottom: 15 },
+    screenTitle: { fontSize: 32, fontWeight: '900', color: colors.text, letterSpacing: 1 },
+    addBtn: { backgroundColor: colors.primary, padding: 12, borderRadius: 30, shadowColor: colors.primary, shadowOpacity: 0.4, shadowRadius: 8, elevation: 5 },
+    card: { 
+        backgroundColor: colors.surface, 
+        padding: 20, 
+        borderRadius: 24, 
+        marginBottom: 16,
+        borderWidth: 1,
+        borderColor: colors.border
+    },
+    header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+    cardTitle: { fontSize: 18, fontWeight: 'bold', color: colors.text },
+    status: { fontWeight: 'bold', fontSize: 14 },
+    itemText: { fontSize: 16, marginBottom: 6, color: colors.textSecondary },
+    meta: { fontSize: 12, color: colors.textTertiary, marginTop: 8, fontWeight: '600' },
+    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
+    modalContent: { backgroundColor: colors.surface, padding: 24, borderRadius: 30, borderWidth: 1, borderColor: colors.border },
+    modalHeader: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: colors.text },
+    input: { 
+        borderWidth: 1, 
+        borderColor: colors.border, 
+        borderRadius: 16, 
+        padding: 16, 
+        marginBottom: 16, 
+        backgroundColor: colors.inputBg,
+        color: colors.text
+    },
     row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-    prioBtn: { padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 5, width: '48%', alignItems: 'center' },
-    activePrio: { backgroundColor: '#FF3B30', borderColor: '#FF3B30' },
-    text: { color: '#333' },
-    activeText: { color: 'white', fontWeight: 'bold' },
-    modalBtns: { flexDirection: 'row', justifyContent: 'space-between' },
-    cancelBtn: { padding: 15, width: '45%', alignItems: 'center' },
-    saveBtn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, width: '45%', alignItems: 'center' },
-    btnText: { fontWeight: 'bold' },
-    label: { marginBottom: 5, fontWeight: '600', color: '#333' },
-    presetList: { maxHeight: 200, borderWidth: 1, borderColor: '#eee', borderRadius: 8, marginBottom: 15 },
-    presetItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
-    addItemBtn: { backgroundColor: '#34C759', padding: 10, borderRadius: 8, alignItems: 'center', marginVertical: 10 },
-    addItemText: { color: 'white', fontWeight: 'bold' },
-    cartContainer: { maxHeight: 150, marginBottom: 15, borderWidth: 1, borderColor: '#eee', borderRadius: 8, padding: 10 },
-    cartItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' }
+    prioBtn: { padding: 12, borderWidth: 1, borderColor: colors.border, borderRadius: 12, width: '48%', alignItems: 'center', backgroundColor: colors.surfaceHighlight },
+    activePrio: { backgroundColor: colors.danger, borderColor: colors.danger },
+    text: { color: colors.textSecondary, fontWeight: '600' },
+    activeText: { color: colors.textInverted, fontWeight: 'bold' },
+    modalBtns: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
+    cancelBtn: { padding: 16, width: '45%', alignItems: 'center', borderRadius: 16, backgroundColor: colors.surfaceHighlight },
+    saveBtn: { backgroundColor: colors.info, padding: 16, borderRadius: 16, width: '45%', alignItems: 'center' },
+    btnText: { fontWeight: 'bold', color: colors.textInverted },
+    label: { marginBottom: 8, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', fontSize: 12 },
+    presetList: { maxHeight: 200, borderWidth: 1, borderColor: colors.border, borderRadius: 16, marginBottom: 16, backgroundColor: colors.surfaceHighlight },
+    presetItem: { padding: 16, borderBottomWidth: 1, borderBottomColor: colors.border },
+    addItemBtn: { backgroundColor: colors.success, padding: 12, borderRadius: 12, alignItems: 'center', marginVertical: 12 },
+    addItemText: { color: colors.textInverted, fontWeight: 'bold' },
+    cartContainer: { maxHeight: 150, marginBottom: 16, borderWidth: 1, borderColor: colors.border, borderRadius: 16, padding: 12, backgroundColor: colors.surfaceHighlight },
+    cartItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.border }
 });
 
 export default RequestScreen;

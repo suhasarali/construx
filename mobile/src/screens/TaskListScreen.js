@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Modal, Image } from 'react-native';
 import api from '../services/api';
+import { colors } from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -85,7 +86,7 @@ const TaskListScreen = () => {
             <View style={styles.cardHeader}>
                 <Text style={styles.title}>{item.title}</Text>
                 <View style={[styles.badge, 
-                    { backgroundColor: item.status === 'Completed' ? '#34C759' : '#FF9500' }
+                    { backgroundColor: item.status === 'Completed' ? colors.success : colors.warning }
                 ]}>
                     <Text style={styles.badgeText}>{item.status}</Text>
                 </View>
@@ -119,7 +120,7 @@ const TaskListScreen = () => {
                             </TouchableOpacity>
                             {selectedTask?.status !== 'Completed' && (
                                 !selectedTask?.assignedTo ? (
-                                    <TouchableOpacity style={[styles.completeBtn, {backgroundColor: '#007AFF'}]} onPress={claimTask}>
+                                    <TouchableOpacity style={[styles.completeBtn, {backgroundColor: colors.info}]} onPress={claimTask}>
                                         <Text style={[styles.btnText, {color: 'white'}]}>Start Task</Text>
                                     </TouchableOpacity>
                                 ) : (
@@ -137,24 +138,31 @@ const TaskListScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#F2F2F7' },
-    header: { fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
-    card: { backgroundColor: 'white', padding: 15, borderRadius: 12, marginBottom: 15, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5 },
-    cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-    title: { fontSize: 18, fontWeight: 'bold', flex: 1 },
-    badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
-    badgeText: { color: 'white', fontSize: 12, fontWeight: 'bold' },
-    desc: { color: '#666', marginBottom: 10 },
-    date: { fontSize: 12, color: '#999' },
-    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-    modalContent: { backgroundColor: 'white', padding: 25, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-    modalTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-    modalDesc: { fontSize: 16, color: '#333', marginBottom: 20 },
-    modalLabel: { fontSize: 14, color: '#666', marginBottom: 30 },
+    container: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.background },
+    header: { fontSize: 32, fontWeight: '900', marginBottom: 24, color: colors.text, letterSpacing: 1 },
+    card: { 
+        backgroundColor: colors.surface, 
+        padding: 20, 
+        borderRadius: 24, 
+        marginBottom: 16, 
+        borderWidth: 1,
+        borderColor: colors.border 
+    },
+    cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+    title: { fontSize: 18, fontWeight: 'bold', flex: 1, color: colors.text },
+    badge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+    badgeText: { color: colors.textInverted, fontSize: 12, fontWeight: 'bold' },
+    desc: { color: colors.textSecondary, marginBottom: 12 },
+    date: { fontSize: 12, color: colors.textTertiary, fontWeight: '600' },
+    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'flex-end' },
+    modalContent: { backgroundColor: colors.surface, padding: 30, borderTopLeftRadius: 30, borderTopRightRadius: 30 },
+    modalTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, color: colors.text },
+    modalDesc: { fontSize: 16, color: colors.textSecondary, marginBottom: 20 },
+    modalLabel: { fontSize: 14, color: colors.textTertiary, marginBottom: 30 },
     modalBtns: { flexDirection: 'row', justifyContent: 'space-between' },
-    cancelBtn: { padding: 15, borderRadius: 10, backgroundColor: '#E5E5EA', width: '45%', alignItems: 'center' },
-    completeBtn: { padding: 15, borderRadius: 10, backgroundColor: '#34C759', width: '45%', alignItems: 'center' },
-    btnText: { fontWeight: 'bold' }
+    cancelBtn: { padding: 16, borderRadius: 16, backgroundColor: colors.surfaceHighlight, width: '45%', alignItems: 'center' },
+    completeBtn: { padding: 16, borderRadius: 16, backgroundColor: colors.success, width: '45%', alignItems: 'center' },
+    btnText: { fontWeight: 'bold', color: colors.text }
 });
 
 export default TaskListScreen;

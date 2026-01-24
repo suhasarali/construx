@@ -5,12 +5,18 @@ import AttendanceScreen from '../screens/AttendanceScreen';
 import TaskListScreen from '../screens/TaskListScreen';
 // import ProfileScreen from '../screens/ProfileScreen'; // To be implemented
 
+import { colors } from '../constants/colors';
+
 const Tab = createBottomTabNavigator();
 
 const WorkerStack = () => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                headerStyle: { backgroundColor: colors.headerBackground },
+                headerTintColor: colors.headerTint,
+                tabBarActiveTintColor: colors.tabBarActive, // Yellow
+                tabBarInactiveTintColor: colors.tabBarInactive,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     if (route.name === 'Dashboard') iconName = focused ? 'home' : 'home-outline';
@@ -19,8 +25,6 @@ const WorkerStack = () => {
                     else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: 'tomato',
-                tabBarInactiveTintColor: 'gray',
             })}
         >
             <Tab.Screen name="Dashboard" component={WorkerDashboardScreen} />

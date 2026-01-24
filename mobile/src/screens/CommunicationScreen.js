@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { colors } from '../constants/colors';
 import api from '../services/api';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
@@ -60,7 +61,7 @@ const CommunicationScreen = () => {
                 <Ionicons 
                     name={item.type === 'Query' ? "help-circle" : (item.priority === 'Urgent' ? "alert-circle" : "information-circle")} 
                     size={24} 
-                    color={item.type === 'Query' ? "#5856D6" : (item.priority === 'Urgent' ? "red" : "#007AFF")} 
+                    color={item.type === 'Query' ? colors.primary : (item.priority === 'Urgent' ? colors.danger : colors.info)} 
                 />
                 <Text style={styles.title}>{item.title} {item.type === 'Query' && '(My Query)'}</Text>
             </View>
@@ -74,7 +75,7 @@ const CommunicationScreen = () => {
             <View style={styles.topRow}>
             <View style={styles.leftHeader}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                    <Ionicons name="chevron-back" size={26} color="#007AFF" />
+                    <Ionicons name="chevron-back" size={26} color={colors.text} />
                 </TouchableOpacity>
                 <Text style={styles.screenTitle}>Messages</Text>
             </View>
@@ -129,35 +130,52 @@ const CommunicationScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#F2F2F7' },
-    topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-    screenTitle: { fontSize: 28, fontWeight: 'bold' },
-    addBtn: { backgroundColor: '#007AFF', padding: 10, borderRadius: 20 },
-    card: { backgroundColor: 'white', padding: 15, borderRadius: 12, marginBottom: 15, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5 },
-    queryCard: { borderLeftWidth: 4, borderLeftColor: '#5856D6' },
-    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-    title: { fontSize: 18, fontWeight: 'bold', marginLeft: 10, flex: 1 },
-    content: { fontSize: 16, color: '#333', marginBottom: 15, lineHeight: 22 },
-    footer: { fontSize: 12, color: '#8E8E93' },
-    empty: { textAlign: 'center', marginTop: 50, color: '#8E8E93' },
-    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
-    modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 15 },
-    modalHeader: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-    input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, marginBottom: 15, fontSize: 16 },
-    textArea: { height: 100, textAlignVertical: 'top' },
-    modalBtns: { flexDirection: 'row', justifyContent: 'space-between' },
-    cancelBtn: { padding: 15, alignItems: 'center', width: '48%' },
-    sendBtn: { backgroundColor: '#007AFF', padding: 15, borderRadius: 8, alignItems: 'center', width: '48%' },
-    btnText: { fontWeight: 'bold' },
+    container: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.background },
+    topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
+    screenTitle: { fontSize: 32, fontWeight: '900', marginLeft: 16, color: colors.text, letterSpacing: 1 },
+    addBtn: { backgroundColor: colors.primary, padding: 12, borderRadius: 30, shadowColor: colors.primary, shadowOpacity: 0.4, shadowRadius: 8, elevation: 5 },
+    card: { 
+        backgroundColor: colors.surface, 
+        padding: 24, 
+        borderRadius: 24, 
+        marginBottom: 16, 
+        borderWidth: 1,
+        borderColor: colors.border
+    },
+    queryCard: { borderLeftWidth: 4, borderLeftColor: colors.primary },
+    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+    title: { fontSize: 18, fontWeight: 'bold', marginLeft: 12, flex: 1, color: colors.text },
+    content: { fontSize: 16, color: colors.textSecondary, marginBottom: 16, lineHeight: 24 },
+    footer: { fontSize: 12, color: colors.textTertiary, fontWeight: '600' },
+    empty: { textAlign: 'center', marginTop: 50, color: colors.textSecondary },
+    modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 24 },
+    modalContent: { backgroundColor: colors.surface, padding: 24, borderRadius: 30, borderWidth: 1, borderColor: colors.border },
+    modalHeader: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: colors.text },
+    input: { 
+        borderWidth: 1, 
+        borderColor: colors.border, 
+        borderRadius: 16, 
+        padding: 16, 
+        marginBottom: 16, 
+        fontSize: 16,
+        backgroundColor: colors.inputBg,
+        color: colors.text
+    },
+    textArea: { height: 120, textAlignVertical: 'top' },
+    modalBtns: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
+    cancelBtn: { padding: 16, alignItems: 'center', width: '45%', borderRadius: 16, backgroundColor: colors.surfaceHighlight },
+    sendBtn: { backgroundColor: colors.primary, padding: 16, borderRadius: 16, alignItems: 'center', width: '45%' },
+    btnText: { fontWeight: 'bold', color: colors.textInverted },
     leftHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-},
-backBtn: {
-    marginRight: 10,
-    padding: 4,
-},
-
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    backBtn: {
+        marginRight: 0,
+        padding: 8,
+        backgroundColor: colors.surfaceHighlight,
+        borderRadius: 12
+    },
 });
 
 export default CommunicationScreen;
