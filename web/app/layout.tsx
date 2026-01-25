@@ -1,8 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import Sidebar from '@/components/Sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import LayoutWrapper from '@/components/LayoutWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,15 +24,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <main className="flex-1 ml-64 p-8 relative">
-              <div className="absolute top-6 right-6 z-50">
-                <ThemeToggle />
-              </div>
-              {children}
-            </main>
-          </div>
+          <LayoutWrapper>{children}</LayoutWrapper>
         </ThemeProvider>
       </body>
     </html>
