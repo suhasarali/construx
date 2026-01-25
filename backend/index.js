@@ -12,19 +12,10 @@ import requestRoutes from './routes/requestRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
-import faceAuthRoutes from './routes/faceAuthRoutes.js';
-//import faceService from './utils/faceService.js';
 
-// Init AI Service
-//faceService.start();
 import inventoryRoutes from './routes/inventoryRoutes.js';
-<<<<<<< HEAD
 import toolRoutes from './routes/toolRoutes.js';
-=======
 import expenseRoutes from './routes/expenseRoutes.js';
->>>>>>> e20030e (Petty Cash implementation)
-
-
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -50,7 +41,6 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/invoices', invoiceRoutes);
-app.use('/api/face-auth', faceAuthRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/tools', toolRoutes);

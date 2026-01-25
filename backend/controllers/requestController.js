@@ -88,8 +88,8 @@ export const updateRequestStatus = async (req, res) => {
         if (status === 'Approved' && request.status !== 'Approved') {
             for (const item of request.items) {
                 // Find inventory item by name (Case insensitive)
-                let inventoryItem = await Inventory.findOne({ 
-                    name: { $regex: new RegExp('^' + item.name + '$', 'i') } 
+                let inventoryItem = await Inventory.findOne({
+                    name: { $regex: new RegExp('^' + item.name + '$', 'i') }
                 });
 
                 if (inventoryItem) {
@@ -268,13 +268,13 @@ export const verifyPaymentAndApprove = async (req, res) => {
             // Auto-update Inventory on Payment Success
             for (const item of request.items) {
                 console.log(`Processing Inventory Update for item: ${item.name}, Qty: ${item.quantity}`);
-                
+
                 // Escape special characters for Regex
                 const safeName = item.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
                 // Find inventory item by name (Case insensitive)
-                let inventoryItem = await Inventory.findOne({ 
-                    name: { $regex: new RegExp('^' + safeName + '$', 'i') } 
+                let inventoryItem = await Inventory.findOne({
+                    name: { $regex: new RegExp('^' + safeName + '$', 'i') }
                 });
 
                 if (inventoryItem) {
@@ -297,7 +297,7 @@ export const verifyPaymentAndApprove = async (req, res) => {
                     inventoryId: inventoryItem._id,
                     type: 'IN',
                     quantity: item.quantity,
-                    reason: 'Purchase', 
+                    reason: 'Purchase',
                     notes: `Request #${request._id} Paid & Approved`,
                     performedBy: req.user.id
                 });

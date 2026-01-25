@@ -274,7 +274,7 @@ export default function MaterialsPage() {
                                         {(() => {
                                             if (req.requiredBy) return new Date(req.requiredBy).toLocaleDateString();
                                             // Demo: Generate random future date based on ID
-                                            const randomDays = (req._id ? (req._id.charCodeAt(req._id.length - 1) % 15) + 2 : 5); 
+                                            const randomDays = (req._id ? (req._id.charCodeAt(req._id.length - 1) % 15) + 2 : 5);
                                             const d = new Date();
                                             d.setDate(d.getDate() + randomDays);
                                             return d.toLocaleDateString();
