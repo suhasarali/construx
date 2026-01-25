@@ -10,6 +10,8 @@ import IssuesListScreen from '../screens/IssuesListScreen';
 import ReportIssueScreen from '../screens/ReportIssueScreen';
 import CustomTabBar from '../components/CustomTabBar'; // Import CustomTabBar
 import ToolsScreen from '../screens/ToolsScreen';
+import PettyCashScreen from '../screens/PettyCashScreen';
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 
 import { colors } from '../constants/colors';
 
@@ -41,6 +43,8 @@ const EngineerStack = () => {
             <Tab.Screen name="Issues" component={IssuesListScreen} />
             <Tab.Screen name="ReportIssue" component={ReportIssueScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="Tools" component={ToolsScreen} options={{ tabBarLabel: 'Tools', tabBarButton: () => null }} />
+            <Tab.Screen name="PettyCash" component={PettyCashScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="AddExpense" component={AddExpenseScreen} options={{ tabBarButton: () => null }} />
         </Tab.Navigator>
     );
 };
