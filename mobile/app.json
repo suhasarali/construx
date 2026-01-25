@@ -27,7 +27,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Quasar to access your camera to take photos for attendance.",
+          "microphonePermission": "Allow Quasar to access your microphone."
+        }
+      ]
     ]
   }
 }

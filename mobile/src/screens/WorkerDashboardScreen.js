@@ -151,6 +151,8 @@ const WorkerDashboardScreen = () => {
                     </View>
                     <Text style={styles.gridLabel}>{t('dailyWork')}</Text>
                 </TouchableOpacity>
+
+
             </View>
 
             {/* Language Modal */}

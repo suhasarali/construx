@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import FaceRecognitionService from '../services/FaceRecognitionService';
+
 import * as Location from 'expo-location';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
+import { colors } from '../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const BiometricAttendanceScreen = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
@@ -37,31 +39,19 @@ const BiometricAttendanceScreen = ({ navigation }) => {
                 // 2. Get Location
                 const location = await Location.getCurrentPositionAsync({});
 
-                // 3. Generate Embedding (Mock for now)
-                const liveEmbedding = Array(128).fill(0).map(() => Math.random());
+                // 3. Send to Backend for Verification (Server-Side AI)
+                // The backend will compare this image with the enrolled one.
+                const response = await api.post('/face-auth/verify', {
+                    image: `data:image/jpeg;base64,${photo.base64}`,
+                    location: location.coords,
+                    deviceId: 'mobile-app'
+                });
 
-                // 4. Match against stored embedding (Mock)
-                // In real app: const storedEmbedding = await AsyncStorage.getItem('userEmbedding');
-                const storedEmbedding = liveEmbedding; // Simulate match
-
-                const isMatch = FaceRecognitionService.isMatch(liveEmbedding, storedEmbedding);
-
-                if (isMatch) {
+                if (response.data) {
                     setStatusMessage('Verified! Marking Attendance...');
 
-                    // 5. Call Backend
-                    const response = await api.post('/face-auth/verify', {
-                        userId: userInfo.id,
-                        confidence: 0.95, // Mock confidence
-                        location: {
-                            lat: location.coords.latitude,
-                            lng: location.coords.longitude,
-                            address: 'Unknown' // Ideally reverse geocode here
-                        },
-                        deviceId: 'Mobile-App'
-                    });
-
-                    Alert.alert('Success', `Attendance Marked: ${response.data.type}`);
+                    // Success handling
+                    Alert.alert('Success', `Attendance Marked: ${response.data.type || 'Success'}`);
                     navigation.goBack();
                 } else {
                     setStatusMessage('Face not recognized. Try again.');
@@ -82,7 +72,10 @@ const BiometricAttendanceScreen = ({ navigation }) => {
         <View style={styles.container}>
             <CameraView style={styles.camera} facing="front" ref={cameraRef}>
                 <View style={styles.overlay}>
-                    <View style={[styles.guideFrame, isVerifying ? styles.scanning : null]} />
+                    <View style={[styles.guideFrame, isVerifying ? styles.scanning : null]}>
+                        {/* Optional: Add a subtle icon inside frame if not scanning */}
+                        {!isVerifying && <Ionicons name="scan-outline" size={100} color="rgba(255,255,255,0.3)" />}
+                    </View>
                     <Text style={styles.statusText}>{statusMessage}</Text>
                 </View>
                 <View style={styles.controls}>
@@ -91,7 +84,11 @@ const BiometricAttendanceScreen = ({ navigation }) => {
                         onPress={handleVerify}
                         disabled={isVerifying}
                     >
-                        {isVerifying ? <ActivityIndicator color="#000" /> : <Text style={styles.verifyText}>Verify & Mark</Text>}
+                        {isVerifying ? (
+                            <ActivityIndicator size="large" color={colors.primary} />
+                        ) : (
+                            <Ionicons name="finger-print" size={40} color={colors.primary} />
+                        )}
                     </TouchableOpacity>
                 </View>
             </CameraView>
@@ -106,48 +103,52 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0,0,0,0.2)',
     },
     guideFrame: {
-        width: 280,
-        height: 280,
-        borderWidth: 3,
+        width: 300,
+        height: 300,
+        borderWidth: 2,
         borderColor: '#fff',
-        borderRadius: 140,
-        marginBottom: 20,
+        borderRadius: 150,
+        marginBottom: 40,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     scanning: {
-        borderColor: '#00FF00',
+        borderColor: colors.success,
+        borderWidth: 4,
     },
     statusText: {
-        fontSize: 20,
+        fontSize: 22,
         color: 'white',
         fontWeight: 'bold',
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        padding: 10,
-        borderRadius: 8,
+        textAlign: 'center',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10
     },
     controls: {
         position: 'absolute',
-        bottom: 50,
-        alignSelf: 'center',
+        bottom: 60,
         width: '100%',
         alignItems: 'center',
     },
     verifyButton: {
-        backgroundColor: '#fff',
-        paddingVertical: 15,
-        paddingHorizontal: 50,
-        borderRadius: 30,
-        elevation: 5,
+        backgroundColor: 'white',
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 10,
     },
     verifyText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#000',
+        // Hidden, using icon
+        display: 'none'
     },
     text: { textAlign: 'center', marginTop: 50 },
-    button: { backgroundColor: '#007AFF', padding: 10, marginTop: 10, alignSelf: 'center' },
+    button: { backgroundColor: colors.primary, padding: 10, marginTop: 10, alignSelf: 'center' },
     buttonText: { color: '#fff' }
 });
 

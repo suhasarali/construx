@@ -13,6 +13,10 @@ import reportRoutes from './routes/reportRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
 import faceAuthRoutes from './routes/faceAuthRoutes.js';
+import faceService from './utils/faceService.js';
+
+// Init AI Service
+faceService.start();
 import inventoryRoutes from './routes/inventoryRoutes.js';
 
 
