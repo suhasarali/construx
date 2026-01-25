@@ -3,7 +3,12 @@ import axios from 'axios';
 // URL of the Python Microservice
 // In production (Render), this will be the URL of your deployed Python app.
 // Locally, it's localhost:5001
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:5001';
+let ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:5001';
+
+// Remove trailing slash if present
+if (ML_SERVICE_URL.endsWith('/')) {
+    ML_SERVICE_URL = ML_SERVICE_URL.slice(0, -1);
+}
 
 class FaceService {
     constructor() {
@@ -34,8 +39,12 @@ class FaceService {
             });
             return response.data;
         } catch (error) {
-            console.error('FaceService Register Error:', error.response?.data || error.message);
-            throw new Error(error.response?.data?.message || 'Failed to register face via AI Service');
+            console.error('FaceService Register Error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
+            throw new Error(error.response?.data?.message || `Failed to register face via AI Service (${error.message})`);
         }
     }
 
