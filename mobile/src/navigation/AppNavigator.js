@@ -10,6 +10,7 @@ import DailyWorkScreen from '../screens/DailyWorkScreen';
 import CommunicationScreen from '../screens/CommunicationScreen';
 import FaceEnrollmentScreen from '../screens/FaceEnrollmentScreen';
 import BiometricAttendanceScreen from '../screens/BiometricAttendanceScreen';
+import InventoryScreen from '../screens/InventoryScreen';
 const HomeScreen = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Welcome Home</Text>
@@ -42,7 +43,10 @@ const AppNavigator = () => {
                             <Stack.Screen name="BiometricAttendance" component={BiometricAttendanceScreen} />
                         </>
                     ) : (
-                        <Stack.Screen name="EngineerHome" component={EngineerStack} />
+                        <>
+                            <Stack.Screen name="EngineerHome" component={EngineerStack} />
+                            <Stack.Screen name="Inventory" component={InventoryScreen} />
+                        </>
                     )
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} />

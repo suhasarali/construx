@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, CalendarCheck, ClipboardList, PenTool, FileText, LogOut, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Users, CalendarCheck, ClipboardList, PenTool, FileText, LogOut, MessageSquare, Warehouse } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
@@ -22,6 +22,7 @@ export default function Sidebar() {
     { name: 'Attendance', href: '/attendance', icon: CalendarCheck },
     { name: 'Tasks', href: '/tasks', icon: ClipboardList }, // Optional: separate page for tasks oversight
     { name: 'Requests', href: '/materials', icon: PenTool }, // We mapped this to /materials in dashboard already
+    { name: 'Inventory', href: '/inventory', icon: Warehouse },
     { name: 'Invoices', href: '/invoices', icon: FileText },
     { name: 'Reports', href: '/reports', icon: FileText },
     { name: 'Messages', href: '/messages', icon: MessageSquare }, // Added Messages

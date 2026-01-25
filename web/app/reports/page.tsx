@@ -72,12 +72,15 @@ export default function ReportsPage() {
                                     <ImageIcon size={18} /> Photos
                                 </h3>
                                 <div className="flex gap-3 overflow-x-auto pb-2">
-                                    {report.photos.map((photo: any, idx: number) => (
-                                        <div key={idx} className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden border border-border">
-                                            {/* Use server URL for images if local */}
-                                            <img src={photo.url ? `http://localhost:5500/${photo.url.replace(/\\/g, '/')}` : ''} alt="Report" className="object-cover w-full h-full" />
-                                        </div>
-                                    ))}
+                                    {report.photos.map((photo: any, idx: number) => {
+                                        const isAbsolute = photo.url && photo.url.startsWith('http');
+                                        const src = isAbsolute ? photo.url : `https://fb-quasar.vercel.app/${photo.url?.replace(/\\/g, '/')}`;
+                                        return (
+                                            <div key={idx} className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden border border-border">
+                                                <img src={src} alt="Report" className="object-cover w-full h-full" />
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

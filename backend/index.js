@@ -17,6 +17,7 @@ import faceService from './utils/faceService.js';
 
 // Init AI Service
 faceService.start();
+import inventoryRoutes from './routes/inventoryRoutes.js';
 
 
 
@@ -44,6 +45,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/face-auth', faceAuthRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // Serve Uploads
 app.use('/uploads', express.static('uploads'));
