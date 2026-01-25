@@ -64,7 +64,7 @@ const WorkerDashboardScreen = () => {
     }, []);
 
     const getStatusText = (status) => {
-        switch(status) {
+        switch (status) {
             case 'Checked In': return t('checkedIn');
             case 'Checked Out': return t('checkedOut');
             default: return t('notCheckedIn');
@@ -78,13 +78,13 @@ const WorkerDashboardScreen = () => {
         >
             <View style={styles.header}>
                 <View style={styles.headerLeft}>
-                   <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langBtn}>
+                    <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langBtn}>
                         <Ionicons name="globe-outline" size={24} color={colors.primary} />
-                   </TouchableOpacity>
-                   <View style={styles.greetingContainer}>
+                    </TouchableOpacity>
+                    <View style={styles.greetingContainer}>
                         <Text style={styles.name}>{userInfo?.name}</Text>
                         <Text style={styles.greeting}>{t('greeting')} {t('worker')}</Text>
-                   </View>
+                    </View>
                 </View>
                 <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
                     <Ionicons name="log-out-outline" size={24} color={colors.danger} />
@@ -102,13 +102,27 @@ const WorkerDashboardScreen = () => {
                     <Text style={styles.statusText}>{getStatusText(stats.attendance)}</Text>
                 </View>
                 {stats.attendance === 'Not Checked In' && (
-                    <TouchableOpacity
-                        style={styles.actionBtn}
-                        onPress={() => navigation.navigate('Attendance')}
-                    >
-                        <Text style={styles.btnText}>{t('checkInNow')}</Text>
-                    </TouchableOpacity>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.actionBtn}
+                            onPress={() => navigation.navigate('Attendance')}
+                        >
+                            <Text style={styles.btnText}>{t('checkInNow')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.actionBtn, { marginTop: 10, backgroundColor: colors.secondary }]}
+                            onPress={() => navigation.navigate('BiometricAttendance')}
+                        >
+                            <Text style={styles.btnText}>Mark Attendance (Face)</Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
+                <TouchableOpacity
+                    style={[styles.actionBtn, { marginTop: 10, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.primary }]}
+                    onPress={() => navigation.navigate('FaceEnrollment')}
+                >
+                    <Text style={[styles.btnText, { color: colors.primary }]}>Enroll Face</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.grid}>
@@ -125,14 +139,14 @@ const WorkerDashboardScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Communication')}>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
-                         <Ionicons name="chatbubbles-outline" size={40} color={colors.primary} />
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                        <Ionicons name="chatbubbles-outline" size={40} color={colors.primary} />
                     </View>
                     <Text style={styles.gridLabel}>{t('messages')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DailyWork')}>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
                         <Ionicons name="cloud-upload-outline" size={40} color={colors.success} />
                     </View>
                     <Text style={styles.gridLabel}>{t('dailyWork')}</Text>
@@ -149,8 +163,8 @@ const WorkerDashboardScreen = () => {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{t('selectLanguage')}</Text>
-                        
-                        <TouchableOpacity 
+
+                        <TouchableOpacity
                             style={[styles.langOption, language === 'en' && styles.selectedLang]}
                             onPress={() => {
                                 switchLanguage('en');
@@ -161,7 +175,7 @@ const WorkerDashboardScreen = () => {
                             {language === 'en' && <Ionicons name="checkmark" size={24} color={colors.primary} />}
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.langOption, language === 'hi' && styles.selectedLang]}
                             onPress={() => {
                                 switchLanguage('hi');
@@ -172,7 +186,7 @@ const WorkerDashboardScreen = () => {
                             {language === 'hi' && <Ionicons name="checkmark" size={24} color={colors.primary} />}
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.langOption, language === 'mr' && styles.selectedLang]}
                             onPress={() => {
                                 switchLanguage('mr');
@@ -183,7 +197,7 @@ const WorkerDashboardScreen = () => {
                             {language === 'mr' && <Ionicons name="checkmark" size={24} color={colors.primary} />}
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.langOption, language === 'kn' && styles.selectedLang]}
                             onPress={() => {
                                 switchLanguage('kn');
@@ -194,7 +208,7 @@ const WorkerDashboardScreen = () => {
                             {language === 'kn' && <Ionicons name="checkmark" size={24} color={colors.primary} />}
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.langOption, language === 'bn' && styles.selectedLang]}
                             onPress={() => {
                                 switchLanguage('bn');
@@ -205,8 +219,8 @@ const WorkerDashboardScreen = () => {
                             {language === 'bn' && <Ionicons name="checkmark" size={24} color={colors.primary} />}
                         </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            style={styles.cancelBtn} 
+                        <TouchableOpacity
+                            style={styles.cancelBtn}
                             onPress={() => setLangModalVisible(false)}
                         >
                             <Text style={styles.cancelText}>{t('cancel')}</Text>
@@ -225,7 +239,7 @@ const styles = StyleSheet.create({
     langBtn: { padding: 10, marginRight: 15, backgroundColor: colors.surfaceHighlight, borderRadius: 50 },
     greetingContainer: { justifyContent: 'center' },
     // Swapped greeting and name styles roughly, but tweaked for new layout
-    name: { fontSize: 24, fontWeight: '900', color: colors.text},
+    name: { fontSize: 24, fontWeight: '900', color: colors.text },
     greeting: { fontSize: 14, color: colors.primary, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 },
     // role style removed/merged
     logoutBtn: { padding: 10, backgroundColor: colors.surfaceHighlight, borderRadius: 12 },
@@ -267,7 +281,7 @@ const styles = StyleSheet.create({
     },
     gridValue: { fontSize: 32, fontWeight: '900', marginVertical: 8, color: colors.text },
     gridLabel: { color: colors.textSecondary, fontSize: 12, fontWeight: '600', textTransform: 'uppercase' },
-    
+
     // Modal Styles
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
     modalContent: { width: '80%', backgroundColor: colors.surface, borderRadius: 20, padding: 20, elevation: 5 },

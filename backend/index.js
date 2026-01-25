@@ -12,6 +12,7 @@ import requestRoutes from './routes/requestRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
+import faceAuthRoutes from './routes/faceAuthRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
 
 
@@ -39,6 +40,7 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/face-auth', faceAuthRoutes);
 app.use('/api/inventory', inventoryRoutes);
 
 // Serve Uploads
