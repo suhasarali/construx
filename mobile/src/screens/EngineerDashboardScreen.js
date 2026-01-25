@@ -25,7 +25,10 @@ const EngineerDashboardScreen = () => {
     ];
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView 
+            style={{ flex: 1, backgroundColor: colors.background }} 
+            contentContainerStyle={styles.container}
+        >
             <View style={styles.header}>
                 <View style={styles.headerLeft}>
                     <TouchableOpacity onPress={() => setLangModalVisible(true)} style={styles.langBtn}>
@@ -136,7 +139,7 @@ const EngineerDashboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { padding: 24, paddingTop: 60, paddingBottom: 100, backgroundColor: colors.background },
+    container: { padding: 24, paddingTop: 60, flexGrow: 1, backgroundColor: colors.background, paddingBottom: 100 },
     header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, alignItems: 'center' },
     headerLeft: { flexDirection: 'row', alignItems: 'center' },
     langBtn: { padding: 10, marginRight: 15, backgroundColor: colors.surfaceHighlight, borderRadius: 50 },
