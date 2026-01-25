@@ -7,6 +7,7 @@ import IssuesListScreen from '../screens/IssuesListScreen';
 import ReportIssueScreen from '../screens/ReportIssueScreen';
 import FaceEnrollmentScreen from '../screens/FaceEnrollmentScreen';
 import BiometricAttendanceScreen from '../screens/BiometricAttendanceScreen';
+import FaceScreen from '../screens/FaceScreen';
 // import ProfileScreen from '../screens/ProfileScreen'; // To be implemented
 import CustomTabBar from '../components/CustomTabBar';
 
@@ -31,6 +32,9 @@ const WorkerStack = () => {
             <Tab.Screen name="Attendance" component={AttendanceScreen} />
             <Tab.Screen name="Tasks" component={TaskListScreen} />
             <Tab.Screen name="Issues" component={IssuesListScreen} />
+            <Tab.Screen name="Face" component={FaceScreen} options={{
+                tabBarIcon: ({ color, size }) => <Ionicons name="scan" size={size} color={color} />
+            }} />
             <Tab.Screen name="ReportIssue" component={ReportIssueScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="FaceEnrollment" component={FaceEnrollmentScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="BiometricAttendance" component={BiometricAttendanceScreen} options={{ tabBarButton: () => null }} />

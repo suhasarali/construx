@@ -5,7 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 // For Android Emulator, use 10.0.2.2 or 10.0.3.2
 // For Genymotion is 10.0.3.2, AVD is 10.0.2.2
 // For iOS Simulator, localhost is fine
-const BASE_URL = 'http://172.16.11.230:5500/api';
+const BASE_URL = 'https://fb-quasar.vercel.app/api';
 
 const api = axios.create({
     baseURL: BASE_URL,

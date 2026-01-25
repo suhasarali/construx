@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
-import FaceRecognitionService from '../services/FaceRecognitionService';
+
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
+import { colors } from '../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const FaceEnrollmentScreen = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
@@ -33,21 +34,9 @@ const FaceEnrollmentScreen = ({ navigation }) => {
             try {
                 const photo = await cameraRef.current.takePictureAsync({ quality: 0.5, base64: true });
 
-                // 1. Generate Embedding locally (to verify face is detectable)
-                // Note: In a real app, you might need to resize/crop the image first
-                // const embedding = await FaceRecognitionService.generateEmbedding(photo.uri);
-
-                // For this demo, we'll simulate the embedding generation or send the photo to backend if backend does it
-                // But per plan, we generate on device. 
-                // Let's assume generateEmbedding works with the URI or base64
-
-                // Mock embedding for demo if model not fully integrated yet
-                const mockEmbedding = Array(128).fill(0).map(() => Math.random());
-
-                // 2. Send to Backend
-                const response = await api.post('/face-auth/register', {
-                    userId: userInfo.id,
-                    embedding: mockEmbedding
+                // 2. Send Image to Backend (Server-Side AI)
+                await api.post('/face-auth/register', {
+                    image: `data:image/jpeg;base64,${photo.base64}`
                 });
 
                 Alert.alert('Success', 'Face enrolled successfully!');
@@ -62,11 +51,15 @@ const FaceEnrollmentScreen = ({ navigation }) => {
         }
     };
 
+
+
     return (
         <View style={styles.container}>
             <CameraView style={styles.camera} facing="front" ref={cameraRef}>
                 <View style={styles.overlay}>
-                    <View style={styles.guideFrame} />
+                    <View style={styles.guideFrame}>
+                        {/* Corner markers could go here for "tech" feel, keeping it simple for now */}
+                    </View>
                     <Text style={styles.instructionText}>Position your face within the frame</Text>
                 </View>
                 <View style={styles.controls}>
@@ -76,9 +69,9 @@ const FaceEnrollmentScreen = ({ navigation }) => {
                         disabled={isProcessing}
                     >
                         {isProcessing ? (
-                            <ActivityIndicator color="#fff" />
+                            <ActivityIndicator size="large" color="#fff" />
                         ) : (
-                            <Text style={styles.captureText}>Enroll Face</Text>
+                            <Ionicons name="camera" size={40} color="white" />
                         )}
                     </TouchableOpacity>
                 </View>
@@ -97,45 +90,49 @@ const styles = StyleSheet.create({
     },
     overlay: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0,0,0,0.3)', // Darker overlay for focus
         justifyContent: 'center',
         alignItems: 'center',
     },
     guideFrame: {
-        width: 250,
-        height: 250,
+        width: 280,
+        height: 350,
         borderWidth: 2,
-        borderColor: '#00FF00',
-        borderRadius: 125, // Circle
+        borderColor: colors.info,
+        borderRadius: 30, // More like a face frame
         backgroundColor: 'transparent',
     },
     instructionText: {
-        marginTop: 20,
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        padding: 10,
-        borderRadius: 5,
+        marginTop: 40,
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: '600',
+        textAlign: 'center',
+        paddingHorizontal: 20
     },
     controls: {
         position: 'absolute',
-        bottom: 40,
-        alignSelf: 'center',
+        bottom: 50,
+        width: '100%',
+        alignItems: 'center',
     },
     captureButton: {
-        backgroundColor: '#007AFF',
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 30,
+        backgroundColor: colors.info,
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 4,
+        borderColor: 'rgba(255,255,255,0.3)'
     },
     disabledButton: {
-        backgroundColor: '#ccc',
+        backgroundColor: '#666',
+        borderColor: '#999'
     },
     captureText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
+        // Not used anymore if using Icon
+        display: 'none'
     },
     text: {
         textAlign: 'center',
