@@ -10,7 +10,9 @@ WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PIP_ROOT_USER_ACTION=ignore
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Pre-download models to speed up boot
 RUN python -c "from deepface import DeepFace; DeepFace.build_model('Facenet')"
