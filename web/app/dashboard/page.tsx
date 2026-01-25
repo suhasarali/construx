@@ -56,6 +56,7 @@ import {
     CircleDollarSign,
     HardHat
 } from 'lucide-react';
+import ROICalculator from '@/components/ROICalculator';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -538,17 +539,24 @@ export default function Dashboard() {
                     </Card>
                 </div>
 
-                {/* 5. Deep Dive Analytics (Span 4, Row 1) */}
-                <div className="col-span-1 md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+                {/* 5. Deep Dive Analytics & Tools (Span 4, Row 1) */}
+                <div className="col-span-1 md:col-span-2 lg:col-span-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+                    {/* ROI Calculator (New) */}
+                    <div className="col-span-1">
+                        <ROICalculator />
+                    </div>
 
                     {/* Cost Breakdown */}
-                    <Card className="p-6 border-none shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-border/50">
+                    <Card className="col-span-1 p-6 border-none shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-border/50">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold flex items-center gap-2">
                                 <PieChart size={18} className="text-purple-500" />
                                 Cost Breakdown
                             </h2>
-                            <p className="text-xs text-muted-foreground">Top 5 spending categories</p>
+                            <p className="text-xs text-muted-foreground">Top 5 categories</p>
                         </div>
                         <div className="h-[200px] flex items-center justify-center">
                             {costBreakdownData && costBreakdownData.labels.length > 0 ? (
@@ -561,19 +569,19 @@ export default function Dashboard() {
                                     }}
                                 />
                             ) : (
-                                <p className="text-sm text-muted-foreground">No spending data yet</p>
+                                <p className="text-sm text-muted-foreground">No spending data</p>
                             )}
                         </div>
                     </Card>
 
                     {/* Task Status Distribution */}
-                    <Card className="p-6 border-none shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-border/50">
+                    <Card className="col-span-1 p-6 border-none shadow-lg bg-card/50 backdrop-blur-sm ring-1 ring-border/50">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold flex items-center gap-2">
                                 <ClipboardList size={18} className="text-blue-500" />
                                 Task Status
                             </h2>
-                            <p className="text-xs text-muted-foreground">Current workload distribution</p>
+                            <p className="text-xs text-muted-foreground">Workload</p>
                         </div>
                         <div className="h-[200px] flex items-center justify-center">
                             {taskStatusData ? (
@@ -586,7 +594,7 @@ export default function Dashboard() {
                                     }}
                                 />
                             ) : (
-                                <p className="text-sm text-muted-foreground">No task data available</p>
+                                <p className="text-sm text-muted-foreground">No task data</p>
                             )}
                         </div>
                     </Card>
