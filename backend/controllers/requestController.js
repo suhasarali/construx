@@ -1,6 +1,8 @@
 import Request from '../models/Request.js';
 import MaterialPreset from '../models/MaterialPreset.js';
 import Invoice from '../models/Invoice.js';
+import Inventory from '../models/Inventory.js';
+import InventoryLog from '../models/InventoryLog.js';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
@@ -80,6 +82,39 @@ export const updateRequestStatus = async (req, res) => {
 
         if (!request) {
             return res.status(404).json({ message: 'Request not found' });
+        }
+
+        // Auto-update Inventory if Approved
+        if (status === 'Approved' && request.status !== 'Approved') {
+            for (const item of request.items) {
+                // Find inventory item by name (Case insensitive)
+                let inventoryItem = await Inventory.findOne({ 
+                    name: { $regex: new RegExp('^' + item.name + '$', 'i') } 
+                });
+
+                if (inventoryItem) {
+                    inventoryItem.quantity += item.quantity;
+                    inventoryItem.lastUpdated = Date.now();
+                    await inventoryItem.save();
+                } else {
+                    // Create new if not exists
+                    inventoryItem = await Inventory.create({
+                        name: item.name,
+                        quantity: item.quantity,
+                        unit: item.unit || 'units',
+                    });
+                }
+
+                // Create Log
+                await InventoryLog.create({
+                    inventoryId: inventoryItem._id,
+                    type: 'IN',
+                    quantity: item.quantity,
+                    reason: 'Purchase', // Or 'Delivery'
+                    notes: `Request #${request._id} Approved`,
+                    performedBy: req.user.id
+                });
+            }
         }
 
         res.json(request);
@@ -229,6 +264,44 @@ export const verifyPaymentAndApprove = async (req, res) => {
 
             await request.save();
             console.log('Payment verified, Invoice created:', invoice.invoiceNumber);
+
+            // Auto-update Inventory on Payment Success
+            for (const item of request.items) {
+                console.log(`Processing Inventory Update for item: ${item.name}, Qty: ${item.quantity}`);
+                
+                // Escape special characters for Regex
+                const safeName = item.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                // Find inventory item by name (Case insensitive)
+                let inventoryItem = await Inventory.findOne({ 
+                    name: { $regex: new RegExp('^' + safeName + '$', 'i') } 
+                });
+
+                if (inventoryItem) {
+                    console.log(`Found existing inventory item: ${inventoryItem.name}`);
+                    inventoryItem.quantity += item.quantity;
+                    inventoryItem.lastUpdated = Date.now();
+                    await inventoryItem.save();
+                } else {
+                    console.log(`Creating new inventory item: ${item.name}`);
+                    // Create new if not exists
+                    inventoryItem = await Inventory.create({
+                        name: item.name,
+                        quantity: item.quantity,
+                        unit: item.unit || 'units',
+                    });
+                }
+
+                // Create Log
+                await InventoryLog.create({
+                    inventoryId: inventoryItem._id,
+                    type: 'IN',
+                    quantity: item.quantity,
+                    reason: 'Purchase', 
+                    notes: `Request #${request._id} Paid & Approved`,
+                    performedBy: req.user.id
+                });
+            }
 
             res.json({
                 message: 'Payment verified and Request Approved',

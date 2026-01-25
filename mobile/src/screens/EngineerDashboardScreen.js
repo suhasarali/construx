@@ -17,6 +17,7 @@ const EngineerDashboardScreen = () => {
         { title: t('attendanceManagement'), icon: 'people', screen: 'AttendanceManagement' },
         { title: t('taskManagement'), icon: 'clipboard', screen: 'TaskManagement' },
         { title: t('materialRequests'), icon: 'cube', screen: 'Requests' },
+        { title: 'Inventory', icon: 'list', screen: 'Inventory' },
         { title: t('dailyProgressReport'), icon: 'stats-chart', screen: 'DPR' },
         { title: t('teamCommunication'), icon: 'chatbubbles', screen: 'Communication' },
     ];
