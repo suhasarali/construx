@@ -8,6 +8,7 @@ import WorkerStack from './WorkerStack';
 import EngineerStack from './EngineerStack';
 import DailyWorkScreen from '../screens/DailyWorkScreen';
 import CommunicationScreen from '../screens/CommunicationScreen';
+import InventoryScreen from '../screens/InventoryScreen';
 const HomeScreen = () => (
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <Text>Welcome Home</Text>
@@ -38,7 +39,10 @@ const AppNavigator = () => {
                             <Stack.Screen name="Communication" component={CommunicationScreen} />
                         </>
                     ) : (
-                        <Stack.Screen name="EngineerHome" component={EngineerStack} />
+                        <>
+                            <Stack.Screen name="EngineerHome" component={EngineerStack} />
+                            <Stack.Screen name="Inventory" component={InventoryScreen} />
+                        </>
                     )
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} />
