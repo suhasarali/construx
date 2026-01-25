@@ -20,6 +20,7 @@ const EngineerDashboardScreen = () => {
         { title: 'Inventory', icon: 'list', screen: 'Inventory' },
         { title: t('dailyProgressReport'), icon: 'stats-chart', screen: 'DPR' },
         { title: t('teamCommunication'), icon: 'chatbubbles', screen: 'Communication' },
+        { title: 'Tools', icon: 'hammer', screen: 'Tools' },
     ];
 
     return (

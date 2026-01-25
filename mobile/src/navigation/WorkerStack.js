@@ -8,6 +8,7 @@ import ReportIssueScreen from '../screens/ReportIssueScreen';
 import FaceEnrollmentScreen from '../screens/FaceEnrollmentScreen';
 import BiometricAttendanceScreen from '../screens/BiometricAttendanceScreen';
 import FaceScreen from '../screens/FaceScreen';
+import WorkerToolsScreen from '../screens/WorkerToolsScreen';
 // import ProfileScreen from '../screens/ProfileScreen'; // To be implemented
 import CustomTabBar from '../components/CustomTabBar';
 
@@ -37,7 +38,9 @@ const WorkerStack = () => {
             }} />
             <Tab.Screen name="ReportIssue" component={ReportIssueScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="FaceEnrollment" component={FaceEnrollmentScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="FaceEnrollment" component={FaceEnrollmentScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="BiometricAttendance" component={BiometricAttendanceScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="Tools" component={WorkerToolsScreen} options={{ tabBarButton: () => null }} />
             {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
         </Tab.Navigator>
     );

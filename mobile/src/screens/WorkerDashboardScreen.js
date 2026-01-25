@@ -145,6 +145,13 @@ const WorkerDashboardScreen = () => {
                     <Text style={styles.gridLabel}>{t('messages')}</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Tools')}>
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                        <Ionicons name="scan-outline" size={40} color={colors.warning} />
+                    </View>
+                    <Text style={styles.gridLabel}>Scan Tool</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DailyWork')}>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
                         <Ionicons name="cloud-upload-outline" size={40} color={colors.success} />

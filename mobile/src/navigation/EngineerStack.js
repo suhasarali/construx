@@ -9,6 +9,7 @@ import CommunicationScreen from '../screens/CommunicationScreen';
 import IssuesListScreen from '../screens/IssuesListScreen';
 import ReportIssueScreen from '../screens/ReportIssueScreen';
 import CustomTabBar from '../components/CustomTabBar'; // Import CustomTabBar
+import ToolsScreen from '../screens/ToolsScreen';
 
 import { colors } from '../constants/colors';
 
@@ -39,6 +40,7 @@ const EngineerStack = () => {
             <Tab.Screen name="Communication" component={CommunicationScreen} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="Issues" component={IssuesListScreen} />
             <Tab.Screen name="ReportIssue" component={ReportIssueScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="Tools" component={ToolsScreen} options={{ tabBarLabel: 'Tools', tabBarButton: () => null }} />
         </Tab.Navigator>
     );
 };
