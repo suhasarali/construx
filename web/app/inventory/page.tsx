@@ -4,10 +4,30 @@ import { useState, useEffect } from 'react';
 import api from '@/utils/api';
 import { Package, History, ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
 
+interface InventoryItem {
+    _id: string;
+    name: string;
+    quantity: number;
+    unit: string;
+    lowStockThreshold: number;
+}
+
+interface InventoryLog {
+    _id: string;
+    type: 'IN' | 'OUT';
+    quantity: number;
+    date: string;
+    reason: string;
+    notes: string;
+    performedBy: {
+        name: string;
+    };
+}
+
 export default function InventoryPage() {
-    const [inventory, setInventory] = useState([]);
-    const [logs, setLogs] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [inventory, setInventory] = useState<InventoryItem[]>([]);
+    const [logs, setLogs] = useState<InventoryLog[]>([]);
+    const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -25,7 +45,7 @@ export default function InventoryPage() {
         }
     };
 
-    const fetchLogs = async (item: any) => {
+    const fetchLogs = async (item: InventoryItem) => {
         setSelectedItem(item);
         try {
             const res = await api.get(`/inventory/${item._id}/logs`);
@@ -42,7 +62,7 @@ export default function InventoryPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Inventory List */}
                 <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {inventory.map((item: any) => (
+                    {inventory.map((item) => (
                         <div 
                             key={item._id} 
                             onClick={() => fetchLogs(item)}
@@ -85,7 +105,7 @@ export default function InventoryPage() {
                             {logs.length === 0 ? (
                                 <p className="text-sm text-muted-foreground">No history found.</p>
                             ) : (
-                                logs.map((log: any) => (
+                                logs.map((log) => (
                                     <div key={log._id} className="relative pl-6 pb-2 border-l border-border last:border-0">
                                         <div className={`absolute left-[-9px] top-0 p-1 rounded-full ${log.type === 'IN' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}>
                                             {log.type === 'IN' ? <ArrowDownCircle size={12} /> : <ArrowUpCircle size={12} />}
