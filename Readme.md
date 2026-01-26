@@ -11,7 +11,6 @@
 - **Attendance System**:
   - **Geofencing**: Ensures attendance is marked only within site boundaries.
   - **Face Recognition**: AI-powered identity verification using DeepFace.
-  - **Biometric/QR**: Fast check-in alternatives for workers.
 - **Material Management**:
   - **Material Approval Requests (MAR)**: Engineers request materials; Managers approve/pay.
   - **Purchase Orders (PO)**: Auto-generation of professional POs upon approval.
@@ -33,24 +32,17 @@
 ### **Backend**
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: MongoDB (Mongoose ODM)
+- **Database**: MongoDB 
 - **Authentication**: JWT, bcryptjs
 - **Payment Gateway**: Razorpay Integration
 
 ### **Frontend (Web)**
 - **Framework**: Next.js (React)
 - **Styling**: Tailwind CSS, Shadcn UI (Lucide React icons)
-- **Features**: Responsive Dashboard, PDF Generation (Print)
 
 ### **Frontend (Mobile)**
 - **Framework**: React Native (Expo)
-- **Maps**: react-native-maps
 - **Camera/Biometrics**: Expo Camera, Local Authentication
-
-### **AI / ML Service**
-- **Language**: Python
-- **Framework**: Flask
-- **Library**: DeepFace (Face Recognition)
 
 ---
 
@@ -58,7 +50,6 @@
 
 ### Prerequisites
 - Node.js (v18+)
-- Python (v3.10+)
 - MongoDB (Local or Atlas)
 - Expo Go (Mobile testing)
 
@@ -78,6 +69,7 @@ npm run dev
 ### 3. Web Dashboard Setup
 ```bash
 cd web
+.env(NEXT_PUBLIC_RAZORPAY_KEY_ID=)
 npm install
 npm run dev
 # Access at http://localhost:3000
@@ -93,13 +85,9 @@ npx expo run:android
 
 ---
 
-## 📄 API Documentation
+| Role | Platform | Phone Number | Password |
+|------|----------|--------------|----------|
+| **Manager** | Web Dashboard | `9999999999` | `password123` |
+| **Site Engineer** | Mobile App | `8888888888` | `password123` |
+| **Worker** | Mobile App | `7777777777` | `password123` |
 
-The backend provides RESTful APIs for:
-- `/api/auth`: Login/Register
-- `/api/attendance`: Check-in/out, Geofencing
-- `/api/requests`: Material Requests & POs
-- `/api/tools`: Tool Library Management
-- `/api/dpr`: Daily Progress Reports
-
----
