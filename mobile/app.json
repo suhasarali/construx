@@ -1,27 +1,30 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "construx",
+    "slug": "construx",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.suhasarali.mobile"
+      "package": "com.suhasarali.construx",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,10 +34,15 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Quasar to access your camera to take photos for attendance.",
-          "microphonePermission": "Allow Quasar to access your microphone."
+          "cameraPermission": "Allow construx to access your camera to take photos for attendance.",
+          "microphonePermission": "Allow construx to access your microphone."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4e1c5b0b-d52f-4d1d-b937-b1ef10dcbf67"
+      }
+    }
   }
 }
