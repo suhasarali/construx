@@ -2,6 +2,16 @@
 
 **Construx** is a comprehensive construction management platform designed to digitize field operations, streamline communication, and enhance visibility across construction sites. It connects Layout Managers, Site Engineers, and Workers through a unified system comprising a Web Dashboard and a Mobile Application.
 
+## Demo Links & Roles
+- app link https://appetize.io/app/b_beg3m5aeni23d6gt2l5b4jo7ae 
+- website link https://construx-zeta.vercel.app/login
+
+| Role | Platform | Phone Number | Password |
+|------|----------|--------------|----------|
+| **Manager** | Web Dashboard | `9999999999` | `password123` |
+| **Site Engineer** | Mobile App | `8888888888` | `password123` |
+| **Worker** | Mobile App | `7777777777` | `password123` |
+
 ### 🏗️ Role-Based Access Control
 - **Manager (Web)**: Full oversight of sites, attendance, inventory, requests, and reports.
 - **Site Engineer (Mobile)**: Daily reporting (DPR), task management, material requests, and crew attendance.
@@ -84,10 +94,3 @@ npx expo run:android
 ```
 
 ---
-
-| Role | Platform | Phone Number | Password |
-|------|----------|--------------|----------|
-| **Manager** | Web Dashboard | `9999999999` | `password123` |
-| **Site Engineer** | Mobile App | `8888888888` | `password123` |
-| **Worker** | Mobile App | `7777777777` | `password123` |
-
